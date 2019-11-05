@@ -8,8 +8,7 @@
 
 TARGET = pocketsnes/pocketsnes.dge
 
-CHAINPREFIX   := /opt/mipsel-RetroFW-linux-uclibc
-CROSS_COMPILE := $(CHAINPREFIX)/usr/bin/mipsel-linux-
+CROSS_COMPILE ?= mipsel-linux-
 
 CC  := $(CROSS_COMPILE)gcc
 CXX := $(CROSS_COMPILE)g++
@@ -24,20 +23,17 @@ INCLUDE = -I src \
 		-I src/include \
 		-I menu -I src/linux -I src/snes9x
 
-CFLAGS =  -std=gnu++11 $(INCLUDE) -DRC_OPTIMIZED -DGCW_ZERO -D__LINUX__ -D__DINGUX__ -DFOREVER_16_BIT $(SDL_CFLAGS)
-CFLAGS += -O3 -fdata-sections -ffunction-sections -fomit-frame-pointer -fno-builtin -fpermissive
-CFLAGS += -mips32 -march=mips32 -mno-mips16 -DMIPS_XBURST 
+CFLAGS = $(INCLUDE) -DRC_OPTIMIZED -DGCW_ZERO -D__LINUX__ -D__DINGUX__ -DFOREVER_16_BIT -DFOREVER_16_BIT_SOUND $(SDL_CFLAGS)
+# CFLAGS += -ggdb3 -Og
+CFLAGS += -O4 -fexpensive-optimizations -fdata-sections -ffunction-sections -mips32r2 -fomit-frame-pointer -fno-builtin
 CFLAGS += -fno-common -Wno-write-strings -Wno-sign-compare -ffast-math -ftree-vectorize
 CFLAGS += -funswitch-loops -fno-strict-aliasing
 CFLAGS += -DFAST_LSB_WORD_ACCESS
-CFLAGS += -flto=4 -fwhole-program -fuse-linker-plugin -fmerge-all-constants
-CFLAGS += -fdata-sections -ffunction-sections -fpermissive
-# CFLAGS += -fprofile-generate -fprofile-dir=/home/retrofw/profile/pocketsnes
-CFLAGS += -fprofile-use -fprofile-dir=./profile
+CFLAGS += -flto
+#CFLAGS += -fprofile-use -fprofile-dir=./profile
+CXXFLAGS = $(CFLAGS) -std=gnu++03 -fno-exceptions -fno-rtti -fno-math-errno -fno-threadsafe-statics
 
-CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti -fno-math-errno -fno-threadsafe-statics
-
-LDFLAGS = $(CXXFLAGS) -lpthread -lz -lpng $(SDL_LIBS) -lSDL_image -Wl,--as-needed -Wl,--gc-sections -s
+LDFLAGS = $(CXXFLAGS) -lz -lpng $(SDL_LIBS) -Wl,--as-needed -Wl,--gc-sections -s
 
 # Find all source files
 SOURCE = src/snes9x menu sal/linux sal
