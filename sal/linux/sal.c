@@ -237,7 +237,13 @@ void sal_VideoExitGame()
 {
 #ifdef GCW_ZERO
 	if (SDL_MUSTLOCK(mScreen)) SDL_UnlockSurface(mScreen);
-	mScreen = SDL_SetVideoMode(SAL_SCREEN_WIDTH, SAL_SCREEN_HEIGHT, mBpp, SDL_HWSURFACE | SDL_DOUBLEBUF);
+	mScreen = SDL_SetVideoMode(SAL_SCREEN_WIDTH, SAL_SCREEN_HEIGHT, mBpp, SDL_HWSURFACE |
+#ifdef SDL_TRIPLEBUF
+		SDL_TRIPLEBUF
+#else
+		SDL_DOUBLEBUF
+#endif
+		);
 	if (SDL_MUSTLOCK(mScreen)) SDL_LockSurface(mScreen);
 #endif
 }
