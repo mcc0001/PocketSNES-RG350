@@ -56,6 +56,7 @@ static u32 sal_Input(int held, u32 j)
 		if (SDL_JoystickGetButton(joy[j], 8) && SDL_JoystickGetButton(joy[j], 5)) inputHeld[j] |= SAL_INPUT_QUICKSAVE;
 	}
 
+	u32 extraKeys = 0;
 	if (j == 0) {
 		u8 *keys = SDL_GetKeyState(NULL);
 
@@ -82,10 +83,22 @@ static u32 sal_Input(int held, u32 j)
 			if (held) return inputHeld[j];
 			return 0;
 		}
+		
+		do {
+			switch (event.type) {
+			case SDL_KEYDOWN:
+				switch (event.key.keysym.sym) {
+				case SDLK_HOME:
+					extraKeys |= SAL_INPUT_MENU;
+					break;
+				}
+				break;
+			}
+		} while(SDL_PollEvent(&event));
 	}
 
 	mInputRepeat = inputHeld[j];
-	return inputHeld[j];
+	return inputHeld[j] | extraKeys;
 }
 
 static int key_repeat_enabled = 1;
@@ -170,9 +183,9 @@ u32 sal_VideoInit(u32 bpp)
 	//Set up the screen
 	mScreen = SDL_SetVideoMode(SAL_SCREEN_WIDTH, SAL_SCREEN_HEIGHT, bpp, SDL_HWSURFACE |
 #ifdef SDL_TRIPLEBUF
-    SDL_TRIPLEBUF
+	SDL_TRIPLEBUF
 #else
-    SDL_DOUBLEBUF
+	SDL_DOUBLEBUF
 #endif
 	);
 
