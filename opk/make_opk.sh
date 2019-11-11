@@ -1,5 +1,7 @@
 #!/bin/sh
 
+cd $(dirname $0)
+
 OPK_NAME=PocketSNES.opk
 
 echo Building ${OPK_NAME}...
