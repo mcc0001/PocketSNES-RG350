@@ -30,10 +30,18 @@ CFLAGS += -fno-common -Wno-write-strings -Wno-sign-compare -ffast-math -ftree-ve
 CFLAGS += -funswitch-loops -fno-strict-aliasing
 CFLAGS += -DFAST_LSB_WORD_ACCESS
 CFLAGS += -flto
-#CFLAGS += -fprofile-use -fprofile-dir=./profile
+ifdef PROFILE_GEN
+CFLAGS += -fprofile-generate -fprofile-dir=/media/data/profile/pocketsnes
+else
+CFLAGS += -fprofile-use -fprofile-dir=./profile
+endif
+
 CXXFLAGS = $(CFLAGS) -std=gnu++03 -fno-exceptions -fno-rtti -fno-math-errno -fno-threadsafe-statics
 
-LDFLAGS = $(CXXFLAGS) -lz -lpng $(SDL_LIBS) -Wl,--as-needed -Wl,--gc-sections -s
+LDFLAGS = $(CXXFLAGS) -lz -lpng $(SDL_LIBS) -Wl,--as-needed
+ifndef PROFILE_GEN
+LDFLAGS += -Wl,--gc-sections -s
+endif
 
 # Find all source files
 SOURCE = src/snes9x menu sal/linux sal
