@@ -7,6 +7,7 @@
 #include "gfx.h"
 #include "memmap.h"
 #include "soundux.h"
+#include "cheats.h"
 
 #define MAX_DISPLAY_CHARS			40
 #define ROM_SELECTOR_SAVE_DEFAULT_DIR	0
@@ -961,6 +962,63 @@ void ShowCredits()
 	sal_InputIgnore();
 }
 
+void ShowCheats()
+{
+	s32 menuExit=0,menuCount=0,menufocus=0,menuSmooth=0;
+	u32 keys=0;
+
+	for(int i=0;i<Cheat.num_cheats;i++){
+		if(Cheat.c[i].enabled){
+			char enableCheatName[MAX_SFCCHEAT_NAME + 1];
+			sprintf(enableCheatName, "%s%s", "*", Cheat.c[i].name);
+			strcpy(mMenuText[menuCount++],enableCheatName);
+		}else{
+			strcpy(mMenuText[menuCount++],Cheat.c[i].name);
+		}
+	}
+
+	sal_InputIgnore();
+	while (!menuExit)
+	{
+		keys=sal_InputPollRepeat();
+		
+		if (keys & INP_BUTTON_MENU_SELECT){
+			if(!Cheat.c[menufocus].enabled){
+				S9xEnableCheat(menufocus);
+				char enableCheatName[MAX_SFCCHEAT_NAME + 1];
+				sprintf(enableCheatName, "%s%s", "*", Cheat.c[menufocus].name);
+				strcpy(mMenuText[menufocus],enableCheatName);
+			}else{
+				S9xDisableCheat(menufocus);
+				strcpy(mMenuText[menufocus],Cheat.c[menufocus].name);
+			}
+		}
+		
+		if (keys & SAL_INPUT_UP) menufocus--; // Up
+		if (keys & SAL_INPUT_DOWN) menufocus++; // Down
+    
+		if (keys&INP_BUTTON_MENU_CANCEL) menuExit=1;
+    
+		if (menufocus>menuCount-1)
+		{
+			menufocus=0;
+			menuSmooth=(menufocus<<8)-1;
+		}   
+		else if (menufocus<0) 
+		{
+			menufocus=menuCount-1;
+			menuSmooth=(menufocus<<8)-1;
+		}
+
+		// Draw screen:
+		menuSmooth=menuSmooth*7+(menufocus<<8); menuSmooth>>=3;
+		RenderMenu("Credits", menuCount,menuSmooth,menufocus);
+		sal_VideoFlip(1);
+		usleep(10000);
+	}
+  	sal_InputIgnore();
+}
+
 static
 void MainMenuUpdateText(s32 menu_index)
 {
@@ -982,6 +1040,9 @@ void MainMenuUpdateText(s32 menu_index)
 			break;
 		case MENU_SETTINGS:
 			strcpy(mMenuText[menu_index], "Settings");
+			break;
+		case MENU_CHEATS:
+			strcpy(mMenuText[MENU_CHEATS],"Cheats");
 			break;
 	}
 }
@@ -1150,6 +1211,7 @@ void MainMenuUpdateTextAll(void)
 	MainMenuUpdateText(MENU_RESET_GAME);
 	MainMenuUpdateText(MENU_ROM_SELECT);
 	MainMenuUpdateText(MENU_SETTINGS);
+	MainMenuUpdateText(MENU_CHEATS);
 	MainMenuUpdateText(MENU_EXIT_APP);
 }
 
@@ -1593,6 +1655,10 @@ s32 MenuRun(s8 *romName)
 					break;
 				case MENU_SETTINGS:
 					SettingsMenu();
+					MainMenuUpdateTextAll();
+					break;
+				case MENU_CHEATS:
+					ShowCheats();
 					MainMenuUpdateTextAll();
 					break;
 				case MENU_RESET_GAME:
