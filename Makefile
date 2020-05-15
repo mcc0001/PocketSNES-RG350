@@ -26,7 +26,7 @@ INCLUDE = -I src \
 CFLAGS = $(INCLUDE) -DRC_OPTIMIZED -DGCW_ZERO -D__LINUX__ -D__DINGUX__ -DFOREVER_16_BIT -DFOREVER_16_BIT_SOUND $(SDL_CFLAGS)
 # CFLAGS += -ggdb3 -Og
 CFLAGS += -O3 -fdata-sections -ffunction-sections -mips32r2 -mno-mips16 -fomit-frame-pointer -fno-builtin
-CFLAGS += -fno-common -Wno-write-strings -Wno-sign-compare -ffast-math -ftree-vectorize
+CFLAGS += -fno-common -Wno-write-strings -Wno-sign-compare -ffast-math -ftree-vectorize -std=c11
 CFLAGS += -funswitch-loops -fno-strict-aliasing
 CFLAGS += -DFAST_LSB_WORD_ACCESS
 CFLAGS += -flto
