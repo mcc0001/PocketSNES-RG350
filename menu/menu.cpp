@@ -921,6 +921,7 @@ void ShowCredits()
 	u32 keys = 0;
 
 	strcpy(mMenuText[menuCount++], "PocketSNES - built " __DATE__);
+	strcpy(mMenuText[menuCount++], __DATE__ " " __TIME__);
 	strcpy(mMenuText[menuCount++], "-------------------------------------");
 	strcpy(mMenuText[menuCount++], "Based on Snes9x version " VERSION /* snes9x.h */);
 	strcpy(mMenuText[menuCount++], "PocketSNES created by Scott Ramsby");
