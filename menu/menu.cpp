@@ -1027,7 +1027,7 @@ void ShowCheats()
 	sal_InputIgnore();
 	while (!menuExit)
 	{
-		keys=sal_InputPollRepeat();
+		keys=sal_InputPollRepeat(0);
 		
 		if (keys & INP_BUTTON_MENU_SELECT){
 			if(!Cheat.c[menufocus].enabled){
