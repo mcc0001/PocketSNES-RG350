@@ -66,8 +66,8 @@ static u32 sal_Input(int held, u32 j)
 		if (keys[SDLK_LSHIFT])		inputHeld[j] |= SAL_INPUT_Y;
 		if (keys[SDLK_TAB])			inputHeld[j] |= SAL_INPUT_L;
 		if (keys[SDLK_BACKSPACE])	inputHeld[j] |= SAL_INPUT_R;
-		if (keys[SDLK_PAGEDOWN])	inputHeld[j] |= SAL_INPUT_L;
-		if (keys[SDLK_PAGEUP])		inputHeld[j] |= SAL_INPUT_R;
+		if (keys[SDLK_PAGEUP])		inputHeld[j] |= SAL_INPUT_L;
+		if (keys[SDLK_PAGEDOWN])	inputHeld[j] |= SAL_INPUT_R;
 		if (keys[SDLK_RETURN])		inputHeld[j] |= SAL_INPUT_START;
 		if (keys[SDLK_ESCAPE])		inputHeld[j] |= SAL_INPUT_SELECT;
 		if (keys[SDLK_UP])			inputHeld[j] |= SAL_INPUT_UP;
