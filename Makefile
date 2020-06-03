@@ -16,7 +16,7 @@ STRIP := $(CROSS_COMPILE)strip
 
 SYSROOT := $(shell $(CC) --print-sysroot)
 SDL_CFLAGS := $(shell $(SYSROOT)/usr/bin/sdl-config --cflags)
-SDL_LIBS := $(shell $(SYSROOT)/usr/bin/sdl-config --libs)
+SDL_LIBS := $(shell $(SYSROOT)/usr/bin/sdl-config --libs) -lSDL_ttf
 
 INCLUDE = -I src \
 		-I sal/linux/include -I sal/include \

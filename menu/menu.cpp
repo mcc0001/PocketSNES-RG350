@@ -183,19 +183,19 @@ s32 MenuMessageBox(const char *message1, const char *message2,
         case MENU_MESSAGE_BOX_MODE_YESNO: // yes no input
 	       if(select==SAL_OK)
 	       {
-			  PrintBar(120-4);
+			  PrintBar(120-0);
 	          sal_VideoPrint(8,120,"YES",SAL_RGB(31,31,31));
 	          sal_VideoPrint(8,140,"NO",SAL_RGB(31,31,31));
 	       }
 	       else
 	       {
-			  PrintBar(140-4);
+			  PrintBar(140-0);
 	          sal_VideoPrint(8,120,"YES",SAL_RGB(31,31,31));
 	          sal_VideoPrint(8,140,"NO",SAL_RGB(31,31,31));
 	       }
 	       break;
 	case MENU_MESSAGE_BOX_MODE_PAUSE:
-			PrintBar(120-4);
+			PrintBar(120-0);
 			sal_VideoPrint(8,120,"Press button to continue",SAL_RGB(31,31,31));
 			break;
 	case MENU_MESSAGE_BOX_MODE_MSG:
@@ -318,7 +318,7 @@ int FileScan()
 				PrintTitle("File Scan");
 				sprintf(text,"Fetched item %d of %d",x, itemCount-1);
 				sal_VideoPrint(8,120,text,SAL_RGB(31,31,31));
-				PrintBar(228-4);
+				PrintBar(228-0);
 				sal_VideoPrint(0,228,mRomDir,SAL_RGB(0,0,0));
 				sal_VideoFlip(1);
 #endif
@@ -609,7 +609,7 @@ s32 FileSelect()
 			if (i==focus)
 			{
 				color=SAL_RGB(31,31,31);
-				PrintBar(y-4);
+				PrintBar(y-0);
 			}
 			else
 			{
@@ -791,7 +791,7 @@ static s32 SaveStateSelect(s32 mode)
 		{
 			sal_VideoDrawRect(0, 16, 262, 16, SAL_RGB(22,0,0));
 			sprintf(text,"SLOT %d",saveno);
-			sal_VideoPrint(107,20,text,SAL_RGB(31,31,31));
+			sal_VideoPrint(107,14,text,SAL_RGB(31,31,31));
 		}
 
 		switch(action)
@@ -809,17 +809,17 @@ static s32 SaveStateSelect(s32 mode)
 				sal_VideoPrint(59,145-36,"Previewing failed",SAL_RGB(31,8,8));
 				snprintf(errormsg, sizeof(errormsg), "%s",strerror(errno));
 				sal_VideoPrint((320-strlen(errormsg)*8)/2,145-20,errormsg,SAL_RGB(31,8,8));
-				sal_VideoDrawRect(0, 186, 262, 16, SAL_RGB(22,0,0));
-				if(mode==0) sal_VideoPrint((262-(strlen(MENU_TEXT_DELETE_SAVESTATE)<<3))>>1,190,MENU_TEXT_DELETE_SAVESTATE,SAL_RGB(31,31,31));
+				sal_VideoDrawRect(0, 192, 262, 16, SAL_RGB(22,0,0));
+				if(mode==0) sal_VideoPrint((262-(strlen(MENU_TEXT_DELETE_SAVESTATE)<<3))>>1,191,MENU_TEXT_DELETE_SAVESTATE,SAL_RGB(31,31,31));
 				break;
 			case 5:
 			{
 				u32 DestWidth = 205, DestHeight = 154;
 				sal_VideoBitmapScale(0, 0, SNES_WIDTH, SNES_HEIGHT, DestWidth, DestHeight, SAL_SCREEN_WIDTH - DestWidth, &mTempFb[0], (u16*)sal_VideoGetBuffer()+(SAL_SCREEN_WIDTH*(((202 + 16) - DestHeight)/2))+((262 - DestWidth)/2));
-				sal_VideoDrawRect(0, 186, 262, 16, SAL_RGB(22,0,0));
-				if(mode==1) sal_VideoPrint((262-(strlen(MENU_TEXT_LOAD_SAVESTATE)<<3))>>1,190,MENU_TEXT_LOAD_SAVESTATE,SAL_RGB(31,31,31));
-				else if(mode==0) sal_VideoPrint((262-(strlen(MENU_TEXT_OVERWRITE_SAVESTATE)<<3))>>1,190,MENU_TEXT_OVERWRITE_SAVESTATE,SAL_RGB(31,31,31));
-				else if(mode==2) sal_VideoPrint((262-(strlen(MENU_TEXT_DELETE_SAVESTATE)<<3))>>1,190,MENU_TEXT_DELETE_SAVESTATE,SAL_RGB(31,31,31));
+				sal_VideoDrawRect(0, 192, 262, 16, SAL_RGB(22,0,0));
+				if(mode==1) sal_VideoPrint((262-(strlen(MENU_TEXT_LOAD_SAVESTATE)<<3))>>1,191,MENU_TEXT_LOAD_SAVESTATE,SAL_RGB(31,31,31));
+				else if(mode==0) sal_VideoPrint((262-(strlen(MENU_TEXT_OVERWRITE_SAVESTATE)<<3))>>1,191,MENU_TEXT_OVERWRITE_SAVESTATE,SAL_RGB(31,31,31));
+				else if(mode==2) sal_VideoPrint((262-(strlen(MENU_TEXT_DELETE_SAVESTATE)<<3))>>1,191,MENU_TEXT_DELETE_SAVESTATE,SAL_RGB(31,31,31));
 				break;
 			}
 			case 6:
@@ -950,7 +950,7 @@ void RenderMenu(const char *menuName, s32 menuCount, s32 menuSmooth, s32 menufoc
       		if (i==menufocus)
       		{
         		color=SAL_RGB(31,31,31);
-				PrintBar(y-4);
+				PrintBar(y-0);
       		}
       		else
       		{
