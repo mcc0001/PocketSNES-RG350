@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <dirent.h>
 #include <SDL.h>
+#include <SDL_ttf.h>
 #include <sys/time.h>
 #include "sal.h"
 
@@ -9,6 +10,8 @@
 #define SNES_HEIGHT 239
 
 SDL_Surface *mScreen = NULL;
+TTF_Font *mFont = NULL;
+
 static u32 mSoundThreadFlag=0;
 static u32 mSoundLastCpuSpeed=0;
 static u32 mPaletteBuffer[PALETTE_BUFFER_LENGTH];
@@ -171,6 +174,11 @@ s32 sal_Init(void)
 
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
+	if (TTF_Init() == -1)
+	{
+		return SAL_ERROR;
+	}
+
 	return SAL_OK;
 }
 
@@ -194,6 +202,13 @@ u32 sal_VideoInit(u32 bpp)
 	{
 	sal_LastErrorSet("SDL_SetVideoMode failed");
 	return SAL_ERROR;
+	}
+
+	mFont = TTF_OpenFont("unifont-13.0.02.ttf", 15);
+	if (mFont == NULL)
+	{
+		sal_LastErrorSet("Can't load font");
+		return SAL_ERROR;
 	}
 
 	return SAL_OK;
@@ -306,6 +321,14 @@ void sal_Reset(void)
 		SDL_JoystickClose(joy[j]);
 	sal_AudioClose();
 	SDL_Quit();
+
+	if (mFont != NULL)
+	{
+		TTF_CloseFont(mFont);
+		mFont = NULL;
+	}
+
+	TTF_Quit();
 }
 
 int mainEntry(int argc, char *argv[]);

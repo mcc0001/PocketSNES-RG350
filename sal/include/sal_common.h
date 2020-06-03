@@ -8,6 +8,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <SDL.h>
+#include <SDL_ttf.h>
 
 #define SAL_OK						1
 #define SAL_ERROR					0

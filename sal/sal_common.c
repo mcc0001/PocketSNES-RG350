@@ -23,12 +23,8 @@ u32 mInputRepeatTimer[32];
 u32 mBpp=16;
 u32 mRefreshRate=60;
 
-static u32 mFont8x8[]= {
-0x0,0x0,0xc3663c18,0x3c2424e7,0xe724243c,0x183c66c3,0xc16f3818,0x18386fc1,0x83f61c18,0x181cf683,0xe7c3993c,0x3c99c3,0x3f7fffff,0xe7cf9f,0x3c99c3e7,0xe7c399,0x3160c080,0x40e1b,0xcbcbc37e,0x7ec3c3db,0x3c3c3c18,0x81c087e,0x8683818,0x60f0e08,0x81422418,0x18244281,0xbd5a2418,0x18245abd,0x818181ff,0xff8181,0xa1c181ff,0xff8995,0x63633e,0x3e6363,0x606060,0x606060,0x3e60603e,0x3e0303,0x3e60603e,0x3e6060,0x3e636363,0x606060,0x3e03033e,0x3e6060,0x3e03033e,0x3e6363,
-0x60603e,0x606060,0x3e63633e,0x3e6363,0x3e63633e,0x3e6060,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x18181818,0x180018,0x666666,0x0,0x367f3600,0x367f36,0x3c067c18,0x183e60,0x18366600,0x62660c,0xe1c361c,0x6e337b,0x181818,0x0,0x18183870,0x703818,0x18181c0e,0xe1c18,0xff3c6600,0x663c,0x7e181800,0x1818,0x0,0x60c0c00,0x7e000000,0x0,0x0,0x181800,0x18306040,0x2060c,0x6e76663c,0x3c6666,0x18181c18,0x7e1818,0x3060663c,0x7e0c18,0x3018307e,0x3c6660,
-0x363c3830,0x30307e,0x603e067e,0x3c6660,0x3e06063c,0x3c6666,0x1830607e,0xc0c0c,0x3c66663c,0x3c6666,0x7c66663c,0x1c3060,0x181800,0x1818,0x181800,0xc1818,0xc183060,0x603018,0x7e0000,0x7e00,0x30180c06,0x60c18,0x3060663c,0x180018,0x5676663c,0x7c0676,0x66663c18,0x66667e,0x3e66663e,0x3e6666,0x606663c,0x3c6606,0x6666361e,0x1e3666,0x3e06067e,0x7e0606,0x3e06067e,0x60606,0x7606067c,0x7c6666,0x7e666666,0x666666,0x1818183c,0x3c1818,0x60606060,0x3c6660,0xe1e3666,
-0x66361e,0x6060606,0x7e0606,0x6b7f7763,0x636363,0x7e7e6e66,0x666676,0x6666663c,0x3c6666,0x3e66663e,0x60606,0x6666663c,0x6c366e,0x3e66663e,0x666636,0x3c06663c,0x3c6660,0x1818187e,0x181818,0x66666666,0x7c6666,0x66666666,0x183c66,0x6b636363,0x63777f,0x183c6666,0x66663c,0x3c666666,0x181818,0x1830607e,0x7e060c,0x18181878,0x781818,0x180c0602,0x406030,0x1818181e,0x1e1818,0x63361c08,0x0,0x0,0x7f0000,0xc060300,0x0,0x603c0000,0x7c667c,0x663e0606,0x3e6666,0x63c0000,
-0x3c0606,0x667c6060,0x7c6666,0x663c0000,0x3c067e,0xc3e0c38,0xc0c0c,0x667c0000,0x3e607c66,0x663e0606,0x666666,0x181c0018,0x3c1818,0x18180018,0xe181818,0x36660606,0x66361e,0x1818181c,0x3c1818,0x7f370000,0x63636b,0x663e0000,0x666666,0x663c0000,0x3c6666,0x663e0000,0x63e6666,0x667c0000,0x607c6666,0x663e0000,0x60606,0x67c0000,0x3e603c,0x187e1800,0x701818,0x66660000,0x7c6666,0x66660000,0x183c66,0x63630000,0x363e6b,0x3c660000,0x663c18,0x66660000,0x3e607c66,0x307e0000,0x7e0c18,0xc181870,0x701818,0x18181818,0x18181818,0x3018180e,0xe1818,0x794f0600,0x30};
+extern SDL_Surface *mScreen;
+extern TTF_Font *mFont;
 
 static s32 mAudioRateLookup[] = {
 	11025, 22050, 32000, 44100, 48000,
@@ -112,105 +108,23 @@ void sal_VideoDrawRect(s32 x, s32 y, s32 width, s32 height, u32 color)
 	else sal_VideoDrawRect16(x,y,width,height,(u16)color, (uint32_t *)sal_VideoGetBuffer());
 }
 
-static void sal_VideoPrint8(s32 x, s32 y, const char *buffer, u8 color, uint32_t *dst)
+static void sal_VideoPrintFont(s32 x, s32 y, const char *buffer, u8 color)
 {
-	s32 m,b;
-	u8 *pix = (u8*)dst;
-	s32 len=0;
-	s32 maxLen=(sal_VideoGetWidth()>>3)-(x>>3);
+	SDL_Color foregroundColor = { color, color, color };
+    SDL_Surface* textSurface = TTF_RenderUTF8_Blended(mFont, buffer, foregroundColor);
 
-	pix = pix + y * sal_VideoGetPitch() + x;
-	while(1) 
-	{
-		s8 letter = *buffer++;
-		u32 *offset;
+	SDL_Rect textLocation = { x, y, 0, 0 };
 
-		//Check for end of string
-		if (letter == 0) break;
+	if (SDL_MUSTLOCK(mScreen)) SDL_UnlockSurface(mScreen);
+	SDL_BlitSurface(textSurface, NULL, mScreen, &textLocation);
+	if (SDL_MUSTLOCK(mScreen)) SDL_LockSurface(mScreen);
 
-		//Get pointer to graphics for letter
-		offset=mFont8x8+((letter)<<1);
-		
-		//read first 32bits of char pixel mask data
-		for (m=0; m<2; m++)
-		{
-			u32 mask = *offset++;
-
-			//process 32bits of data in 8bit chunks
-			for (b=0; b<4; b++)
-			{
-				if(mask&(1<<0)) pix[0] = color;
-				if(mask&(1<<1)) pix[1] = color;
-				if(mask&(1<<2)) pix[2] = color;
-				if(mask&(1<<3)) pix[3] = color;
-				if(mask&(1<<4)) pix[4] = color;
-				if(mask&(1<<5)) pix[5] = color;
-				if(mask&(1<<6)) pix[6] = color;
-				if(mask&(1<<7)) pix[7] = color;
-				pix+=sal_VideoGetPitch(); //move to next line
-				mask>>=8; //shift mask data ready for next loop
-			}
-		}
-		//position pix pointer to start of next char
-		pix-=(sal_VideoGetPitch()<<3);
-		pix+=(1<<3);
-
-		len++;
-		if (len>=maxLen-1) break;
-	}
-}
-
-static void sal_VideoPrint16(s32 x, s32 y, const char *buffer, u16 color, uint32_t *dst)
-{
-	s32 m,b;
-	u16 *pix = (u16*)dst;
-	s32 len=0;
-	s32 maxLen=(sal_VideoGetWidth()>>3)-(x>>3);
-
-	pix = ((u16*) ((u8*) pix + y * sal_VideoGetPitch())) + x;
-	while(1) 
-	{
-		s8 letter = *buffer++;
-		u32 *offset;
-
-		//Check for end of string
-		if (letter == 0) break;
-
-		//Get pointer to graphics for letter
-		offset=mFont8x8+((letter)<<1);
-		
-		//read first 32bits of char pixel mask data
-		for (m=0; m<2; m++)
-		{
-			u32 mask = *offset++;
-
-			//process 32bits of data in 8bit chunks
-			for (b=0; b<4; b++)
-			{
-				if(mask&(1<<0)) pix[0] = color;
-				if(mask&(1<<1)) pix[1] = color;
-				if(mask&(1<<2)) pix[2] = color;
-				if(mask&(1<<3)) pix[3] = color;
-				if(mask&(1<<4)) pix[4] = color;
-				if(mask&(1<<5)) pix[5] = color;
-				if(mask&(1<<6)) pix[6] = color;
-				if(mask&(1<<7)) pix[7] = color;
-				pix=(u16*) ((u8*) pix + sal_VideoGetPitch()); //move to next line
-				mask>>=8; //shift mask data ready for next loop
-			}
-		}
-		//position pix pointer to start of next char
-		pix = (u16*) ((u8*) pix - (sal_VideoGetPitch() << 3)) + (1 << 3);
-
-		len++;
-		if (len>=maxLen-1) break;
-	}
+	SDL_FreeSurface(textSurface);
 }
 
 void sal_VideoPrint(s32 x, s32 y, const char *buffer, u32 color)
 {
-	if (mBpp==8) sal_VideoPrint8(x,y,buffer,(u8)color, (uint32_t *)sal_VideoGetBuffer());
-	else sal_VideoPrint16(x,y,buffer,(u16)color, (uint32_t *)sal_VideoGetBuffer());
+	sal_VideoPrintFont(x, y, buffer, color);
 }
 
 static 

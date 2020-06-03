@@ -7,7 +7,7 @@ OPK_NAME=PocketSNES.opk
 echo Building ${OPK_NAME}...
 
 # create opk
-FLIST="../pocketsnes/PocketSNES.dge default.gcw0.desktop ../pocketsnes/backdrop.png sfc.png"
+FLIST="../pocketsnes/PocketSNES.dge default.gcw0.desktop ../pocketsnes/backdrop.png sfc.png unifont-13.0.02.ttf"
 
 rm -f ${OPK_NAME}
 mksquashfs ${FLIST} ${OPK_NAME} -all-root -no-xattrs -noappend -no-exports
