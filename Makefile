@@ -26,7 +26,7 @@ INCLUDE = -I src \
 CFLAGS = $(INCLUDE) -DRC_OPTIMIZED -DGCW_ZERO -D__LINUX__ -D__DINGUX__ -DFOREVER_16_BIT -DFOREVER_16_BIT_SOUND $(SDL_CFLAGS)
 # CFLAGS += -ggdb3 -Og
 CFLAGS += -O3 -fdata-sections -ffunction-sections -mips32r2 -mno-mips16 -fomit-frame-pointer -fno-builtin
-CFLAGS += -fno-common -Wno-write-strings -Wno-sign-compare -ffast-math -ftree-vectorize -std=c11
+CFLAGS += -fno-common -Wno-write-strings -Wno-sign-compare -ffast-math -ftree-vectorize --std=gnu11
 CFLAGS += -funswitch-loops -fno-strict-aliasing
 CFLAGS += -DFAST_LSB_WORD_ACCESS
 CFLAGS += -flto
@@ -36,7 +36,7 @@ else
 CFLAGS += -fprofile-use -fprofile-dir=./profile
 endif
 
-CXXFLAGS = $(CFLAGS) -std=gnu++03 -fno-exceptions -fno-rtti -fno-math-errno -fno-threadsafe-statics
+CXXFLAGS = $(filter-out --std=gnu11,$(CFLAGS)) --std=gnu++11 -fno-exceptions -fno-rtti -fno-math-errno -fno-threadsafe-statics
 
 LDFLAGS = $(CXXFLAGS) -lz -lpng $(SDL_LIBS) -Wl,--as-needed
 ifndef PROFILE_GEN
@@ -77,7 +77,7 @@ ipk: all
 	$(CC) $(CFLAGS) -c $< -o $@
 
 %.o: %.cpp
-	$(CXX) $(CFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 .PHONY : clean
 
