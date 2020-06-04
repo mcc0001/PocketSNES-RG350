@@ -50,7 +50,7 @@ void DefaultMenuOptions(void)
 	mMenuOptions->country=0;
 	mMenuOptions->showFps=0;
 	mMenuOptions->soundRate=48000;
-	mMenuOptions->stereo=0;
+	mMenuOptions->stereo=1;
 	mMenuOptions->fullScreen=3;
 	mMenuOptions->autoSaveSram=1;
 	mMenuOptions->soundSync=1;
