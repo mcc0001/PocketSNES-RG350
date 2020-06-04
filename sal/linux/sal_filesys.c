@@ -75,7 +75,7 @@ s32 sal_DirectoryRead(struct SAL_DIR *d, struct SAL_DIRECTORY_ENTRY *dir, s8 *ba
 {
 	struct dirent *de=NULL;
 	struct stat s;
-	char path[PATH_MAX];
+	char path[SAL_MAX_PATH];
 
 	if(d)
 	{
@@ -108,6 +108,8 @@ s32 sal_DirectoryRead(struct SAL_DIR *d, struct SAL_DIRECTORY_ENTRY *dir, s8 *ba
 	{
 		return SAL_ERROR;
 	}
+
+	return SAL_ERROR;
 }
 
 void sal_DirectoryGetParent(s8 *path)

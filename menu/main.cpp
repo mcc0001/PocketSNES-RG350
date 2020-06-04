@@ -249,6 +249,8 @@ bool8_32 S9xDeinitUpdate (int Width, int Height, bool8_32)
 	}
 
 	sal_VideoFlip(0);
+
+	return (TRUE);
 }
 
 const char *S9xGetFilename (const char *ex)
