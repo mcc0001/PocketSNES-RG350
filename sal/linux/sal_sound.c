@@ -16,6 +16,8 @@ static uint8_t Buffer[BUFFER_SAMPLES * 2 * 2];
 static u32 SamplesPerFrame, BytesPerSample;
 static u32 Muted; // S9xSetAudioMute(TRUE) gets undone after SNES Global Mute ends
 
+extern void S9xMixSamples (Uint8 *buffer, int sample_count);
+
 static void sdl_audio_callback (void *userdata, Uint8 *stream, int len)
 {
 	u32 SamplesRequested = len / BytesPerSample, SamplesBuffered,
