@@ -778,7 +778,7 @@ static s32 SaveStateSelect(s32 mode)
 		}
 
 		PrintTitle("Save States");
-		sal_VideoPrint(8,4,"Choose a slot",SAL_RGB(31,8,8));
+		sal_VideoPrint(8,0,"Choose a slot",SAL_RGB(31,8,8));
 
 		if(saveno==-1)
 		{
@@ -1382,7 +1382,7 @@ s32 SettingsMenu(void)
 					break;
 				case MENU_CREDITS:
 					ShowCredits();
-					MainMenuUpdateTextAll();
+					SettingsMenuUpdateTextAll();
 					break;
 			}
 		}
