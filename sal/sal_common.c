@@ -109,9 +109,9 @@ void sal_VideoDrawRect(s32 x, s32 y, s32 width, s32 height, u32 color)
 	else sal_VideoDrawRect16(x,y,width,height,(u16)color, (uint32_t *)sal_VideoGetBuffer());
 }
 
-static void sal_VideoPrintFont(s32 x, s32 y, const char *buffer, u8 color)
+static void sal_VideoPrintFont(s32 x, s32 y, const char *buffer, u8 red, u8 green, u8 blue)
 {
-	SDL_Color foregroundColor = { color, color, color };
+	SDL_Color foregroundColor = { red, green, blue };
     SDL_Surface* textSurface = TTF_RenderUTF8_Blended(mFont, buffer, foregroundColor);
 
 	SDL_Rect textLocation = { x, y, 0, 0 };
@@ -125,7 +125,10 @@ static void sal_VideoPrintFont(s32 x, s32 y, const char *buffer, u8 color)
 
 void sal_VideoPrint(s32 x, s32 y, const char *buffer, u32 color)
 {
-	sal_VideoPrintFont(x, y, buffer, color);
+	u8 red = ((color >> 11) & 0x1F) * 255 / 31;
+	u8 green = ((color >> 6) & 0x1F) * 255 / 31;
+	u8 blue = (color & 0x1F) * 255 / 31;
+	sal_VideoPrintFont(x, y, buffer, red, green, blue);
 }
 
 static 

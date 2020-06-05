@@ -734,7 +734,7 @@ static s32 SaveStateSelect(s32 mode)
 			}
 		}
 
-		PrintTitle("Choose a slot");
+		sal_VideoPrint(8, 0, "Choose a slot", SAL_RGB(31,8,8));
 
 		if (saveno == -1) {
 			if (action != 10 && action != 0) {
