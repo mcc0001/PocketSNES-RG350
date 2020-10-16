@@ -23,13 +23,14 @@ INCLUDE = -I src \
 		-I src/include \
 		-I menu -I src/linux -I src/snes9x
 
-CFLAGS = $(INCLUDE) -DGCW_ZERO -D__LINUX__ -D__DINGUX__ -DFOREVER_16_BIT -DFOREVER_16_BIT_SOUND $(SDL_CFLAGS)
+CFLAGS = $(INCLUDE) -DRC_OPTIMIZED -DGCW_ZERO -D__LINUX__ -D__DINGUX__ -DFOREVER_16_BIT -DFOREVER_16_BIT_SOUND -DLAGFIX -DNO_ROM_BROWSER
 # CFLAGS += -ggdb3 -Og
 CFLAGS += -O3 -fdata-sections -ffunction-sections -mips32r2 -mno-mips16 -fomit-frame-pointer -fno-builtin
 CFLAGS += -fno-common -Wno-write-strings -Wno-sign-compare -ffast-math -ftree-vectorize --std=gnu11
 CFLAGS += -funswitch-loops -fno-strict-aliasing
 CFLAGS += -DFAST_LSB_WORD_ACCESS
 CFLAGS += -flto
+CFLAGS += $(SDL_CFLAGS)
 ifdef PROFILE_GEN
 CFLAGS += -fprofile-generate -fprofile-dir=/media/data/profile/pocketsnes
 else
