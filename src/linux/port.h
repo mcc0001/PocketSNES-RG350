@@ -152,5 +152,3 @@ void _splitpath (const char *path, char *drive, char *dir, char *fname,
 #define SNES_SYSTEM_DIR "./"
 
 #endif //  _SNESPPC
-
-

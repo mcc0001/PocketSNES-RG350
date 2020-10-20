@@ -446,7 +446,7 @@ void S9xSaveSRAM (int showWarning)
 
 bool8_32 S9xOpenSoundDevice(int a, unsigned char b, int c)
 {
-
+	return TRUE;
 }
 
 void S9xAutoSaveSRAM (void)

@@ -1,5 +1,6 @@
-#include <sal.h>
 #include <sys/time.h>
+
+#include "sal.h"
 
 static u32 mFrameTime;
 
