@@ -17,9 +17,6 @@
 
 static u16 mMenuBackground[SAL_SCREEN_WIDTH * SAL_SCREEN_HEIGHT];
 
-static s32 mMenutileXscroll=0;
-static s32 mMenutileYscroll=0;
-static s32 mTileCounter=0;
 static s32 mQuickSavePresent=0;
 static u32 mPreviewingState=0;
 
@@ -231,7 +228,6 @@ void freeRomLists()
 
 void DefaultRomListItems()
 {
-	s32 i;
 	strcpy(mRomList[ROM_SELECTOR_SAVE_DEFAULT_DIR].displayName, "Save default directory");
 	strcpy(mRomList[ROM_SELECTOR_MAIN_MENU].displayName, "Main menu");
 	strcpy(mRomList[ROM_SELECTOR_DEFAULT_FOCUS].displayName, "/");
@@ -418,8 +414,7 @@ s32 FileSelect()
 	s32 menuExit = 0;
 	s32 scanstart = 0, scanend = 0;
 	u32 keys = 0;
-	s32 size = 0, check = SAL_OK;
-
+	
 	previousRom[0] = '\0';
 
 	if (FileScan() != SAL_OK) {
@@ -685,7 +680,6 @@ static s32 SaveStateSelect(s32 mode)
 	s8 text[128];
 	s32 action = 11;
 	u32 keys = 0;
-	u16 *pixTo, *pixFrom;
 
 	if (mRomName[0] == 0) {
 		// no rom loaded
@@ -1243,7 +1237,6 @@ void MenuReloadOptions()
 
 void MenuInit(const char *systemDir, struct MENU_OPTIONS *menuOptions)
 {
-	s8 filename[SAL_MAX_PATH];
 	u16 *pix;
 	s32 x;
 
@@ -1339,7 +1332,6 @@ s32 AudioSettingsMenu(void)
 {
 	s32 menuExit=0,menuCount=AUDIO_SETTINGS_MENU_COUNT,menufocus=0,menuSmooth=0;
 	s32 action=0;
-	s32 subaction=0;
 	u32 keys=0;
 
 	AudioSettingsMenuUpdateTextAll();

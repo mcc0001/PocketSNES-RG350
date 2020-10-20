@@ -22,10 +22,7 @@
 #define FIXED_POINT_SHIFT 16
 
 static struct MENU_OPTIONS mMenuOptions;
-static int mEmuScreenHeight;
-static int mEmuScreenWidth;
 static char mRomName[SAL_MAX_PATH]={""};
-static u32 mLastRate=0;
 
 static s8 mFpsDisplay[16]={""};
 static s8 mVolumeDisplay[16]={""};
@@ -33,10 +30,7 @@ static s8 mQuickStateDisplay[16]={""};
 static u32 mFps=0;
 static u32 mLastTimer=0;
 static u32 mEnterMenu=0;
-static u32 mLoadRequested=0;
-static u32 mSaveRequested=0;
 static u32 mQuickStateTimer=0;
-static u32 mVolumeTimer=0;
 static u32 mVolumeDisplayTimer=0;
 static u32 mFramesCleared=0;
 static u32 mInMenu=0;
@@ -225,7 +219,7 @@ bool8_32 S9xDeinitUpdate (int Width, int Height, bool8_32)
 	{
 		mFps++;
 		newTimer=sal_TimerRead();
-		if(newTimer-mLastTimer>Memory.ROMFramesPerSecond)
+		if(newTimer - mLastTimer > (u32)Memory.ROMFramesPerSecond)
 		{
 			mLastTimer=newTimer;
 			sprintf(mFpsDisplay,"%2d/%2d", mFps, Memory.ROMFramesPerSecond);
@@ -470,7 +464,6 @@ static u32 LastHz = 0;
 static
 int Run(int sound)
 {
-  	int i;
 	bool PAL = !!(Memory.FillRAM[0x2133] & 4);
 
 	sal_VideoEnterGame(mMenuOptions.fullScreen, PAL, Memory.ROMFramesPerSecond);
@@ -489,7 +482,9 @@ int Run(int sound)
 		Settings.SixteenBitSound=true;
 #endif
 
-		if (LastAudioRate != mMenuOptions.soundRate || LastStereo != mMenuOptions.stereo || LastHz != Memory.ROMFramesPerSecond)
+		if (LastAudioRate != mMenuOptions.soundRate ||
+			LastStereo != mMenuOptions.stereo ||
+			LastHz != (u32)Memory.ROMFramesPerSecond)
 		{
 			if (LastAudioRate != 0)
 			{
@@ -545,11 +540,6 @@ static inline int RunNoSound(void)
 static
 int SnesRomLoad()
 {
-	char filename[SAL_MAX_PATH+1];
-	int check;
-	char text[256];
-	FILE *stream=NULL;
-
 	MenuMessageBox("Loading ROM...",mRomName,"",MENU_MESSAGE_BOX_MODE_MSG);
 	if (!Memory.LoadROM (mRomName))
 	{
@@ -725,8 +715,6 @@ extern "C"
 
 int mainEntry(int argc, char* argv[])
 {
-	int ref = 0;
-
 	s32 event=EVENT_NONE;
 
 	sal_Init();

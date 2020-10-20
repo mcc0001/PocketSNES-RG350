@@ -14,11 +14,10 @@ TTF_Font *mFont = NULL;
 
 static u32 mSoundThreadFlag=0;
 static u32 mSoundLastCpuSpeed=0;
+
 static u32 mPaletteBuffer[PALETTE_BUFFER_LENGTH];
 static u32 *mPaletteCurr=(u32*)&mPaletteBuffer[0];
-static u32 *mPaletteLast=(u32*)&mPaletteBuffer[0];
 static u32 *mPaletteEnd=(u32*)&mPaletteBuffer[PALETTE_BUFFER_LENGTH];
-static u32 mInputFirst=0;
 
 s32 mCpuSpeedLookup[1]={0};
 
@@ -89,11 +88,13 @@ static u32 sal_Input(int held, u32 j)
 		
 		do {
 			switch (event.type) {
-			case SDL_KEYDOWN:
-				switch (event.key.keysym.sym) {
-				case SDLK_HOME:
-					extraKeys |= SAL_INPUT_MENU;
-					break;
+				case SDL_KEYDOWN:
+					switch (event.key.keysym.sym) {
+						case SDLK_HOME:
+							extraKeys |= SAL_INPUT_MENU;
+							break;
+					default:
+						continue;
 				}
 				break;
 			}

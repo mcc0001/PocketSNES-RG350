@@ -845,7 +845,6 @@ void DecodeBlock (Channel *ch)
 		uint8 interim_byte = 0;
 	
 		compressed++;
-		signed short *raw = ch->block = ch->decoded;
 	
 		// Seperate out the header parts used for decoding
 
@@ -1647,11 +1646,12 @@ static inline void MixMono (int sample_count)
 			}
 			else
 			{
-				for (;V > 0; V--)
+				for (;V > 0; V--) {
 					if ((noise_gen <<= 1) & 0x80000000L)
 						noise_gen ^= 0x0040001L;
-					ch->sample = (noise_gen << 17) >> 17;
-					ch->interpolate = 0;
+				}
+				ch->sample = (noise_gen << 17) >> 17;
+				ch->interpolate = 0;
 			}
 			V = (ch->sample * ch-> left_vol_level) / 128;
 		}
