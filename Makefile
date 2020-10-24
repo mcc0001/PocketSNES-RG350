@@ -28,7 +28,7 @@ CFLAGS = $(INCLUDE) -DRC_OPTIMIZED -DGCW_ZERO -D__LINUX__ -D__DINGUX__ -DFOREVER
 CFLAGS += -O3 -fdata-sections -ffunction-sections -mips32r2 -mno-mips16 -fomit-frame-pointer -fno-builtin
 CFLAGS += -fno-common -Wno-write-strings -Wno-sign-compare -ffast-math -ftree-vectorize --std=gnu11
 CFLAGS += -funswitch-loops -fno-strict-aliasing
-CFLAGS += -DFAST_LSB_WORD_ACCESS
+CFLAGS += -DFAST_ALIGNED_LSB_WORD_ACCESS
 CFLAGS += -flto
 CFLAGS += $(SDL_CFLAGS)
 ifdef PROFILE_GEN
