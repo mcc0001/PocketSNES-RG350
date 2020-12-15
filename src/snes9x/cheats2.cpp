@@ -234,7 +234,12 @@ bool8 S9xLoadCheatFile (const char *filename)
 
     FILE *fs = fopen (filename, "rb");
     uint8 data [8 + MAX_SFCCHEAT_NAME];
-
+    //littlehui debug
+/*    FILE *fp;
+    fp = fopen("/media/home/pocketsnes.txt", "w");
+    //fprintf(fp, "%s", cheat_file_path);
+    fprintf(fp, "%s",  filename);
+    fclose(fp);*/
     if (!fs)
 	return (FALSE);
 

@@ -101,7 +101,7 @@ s32 DeleteMenuOptions(const char *path, const char *filename,
 	if (showMessage)
 	{
 		PrintTitle("");
-		sal_VideoPrint(8,120,"Deleting...",SAL_RGB(31,31,31));
+		sal_VideoPrint(8,120,"删除中...",SAL_RGB(31,31,31));
 		sal_VideoFlip(1);
 	}
 
@@ -767,18 +767,18 @@ static s32 SaveStateSelect(s32 mode)
 		else if((keys&INP_BUTTON_MENU_SELECT)&&(mode==2)&&(action==5)
 		|| (keys&SAL_INPUT_X)&&(mode==0))
 		{
-			if(MenuMessageBox("Are you sure you want to delete","this save?","",MENU_MESSAGE_BOX_MODE_YESNO)==SAL_OK) action=13;  //delete slot with no preview
+			if(MenuMessageBox("确定要删除","这个存档吗?","",MENU_MESSAGE_BOX_MODE_YESNO)==SAL_OK) action=13;  //delete slot with no preview
 		}
 		else if((keys&INP_BUTTON_MENU_PREVIEW_SAVESTATE)&&(action==12)) action=3;  // preview slot mode
 		else if((keys&INP_BUTTON_MENU_SELECT)&&(mode==1)&&(action==12)) action=8;  //load slot with no preview
 		else if((keys&INP_BUTTON_MENU_SELECT)&&(mode==0)&&(action==12)) action=6;  //save slot with no preview
 		else if((keys&INP_BUTTON_MENU_SELECT)&&(mode==2)&&(action==12))
 		{
-			if(MenuMessageBox("Are you sure you want to delete","this save?","",MENU_MESSAGE_BOX_MODE_YESNO)==SAL_OK) action=13;  //delete slot with no preview
+			if(MenuMessageBox("确定要删除","这个存档吗?","",MENU_MESSAGE_BOX_MODE_YESNO)==SAL_OK) action=13;  //delete slot with no preview
 		}
 
-		PrintTitle("Save States");
-		sal_VideoPrint(8,0,"Choose a slot",SAL_RGB(31,8,8));
+		PrintTitle("保存存档");
+		sal_VideoPrint(8,0,"选择一个存档",SAL_RGB(31,8,8));
 
 		if(saveno==-1)
 		{
@@ -790,7 +790,7 @@ static s32 SaveStateSelect(s32 mode)
 		else
 		{
 			sal_VideoDrawRect(0, 16, 262, 16, SAL_RGB(22,0,0));
-			sprintf(text,"SLOT %d",saveno);
+			sprintf(text,"存档 %d",saveno);
 			sal_VideoPrint(107,14,text,SAL_RGB(31,31,31));
 		}
 
@@ -800,13 +800,13 @@ static s32 SaveStateSelect(s32 mode)
 				//sal_VideoPrint(112,145-36,14,"Checking....",(unsigned short)SAL_RGB(31,31,31));
 				break;
 			case 2:
-				sal_VideoPrint(115,145-36,"FREE",SAL_RGB(31,31,31));
+				sal_VideoPrint(115,145-36,"空闲",SAL_RGB(31,31,31));
 				break;
 			case 3:
-				sal_VideoPrint(75,145-36,"Previewing...",SAL_RGB(31,31,31));
+				sal_VideoPrint(75,145-36,"预览中...",SAL_RGB(31,31,31));
 				break;
 			case 4:
-				sal_VideoPrint(59,145-36,"Previewing failed",SAL_RGB(31,8,8));
+				sal_VideoPrint(59,145-36,"预览失败",SAL_RGB(31,8,8));
 				snprintf(errormsg, sizeof(errormsg), "%s",strerror(errno));
 				sal_VideoPrint((320-strlen(errormsg)*8)/2,145-20,errormsg,SAL_RGB(31,8,8));
 				sal_VideoDrawRect(0, 192, 262, 16, SAL_RGB(22,0,0));
@@ -823,30 +823,30 @@ static s32 SaveStateSelect(s32 mode)
 				break;
 			}
 			case 6:
-				sal_VideoPrint(95,145-36,"Saving...",SAL_RGB(31,31,31));
+				sal_VideoPrint(95,145-36,"保存中...",SAL_RGB(31,31,31));
 				break;
 			case 7:
-				sal_VideoPrint(95,145-36,"Saving failed",SAL_RGB(31,8,8));
+				sal_VideoPrint(95,145-36,"保存失败",SAL_RGB(31,8,8));
 				snprintf(errormsg, sizeof(errormsg), "%s",strerror(errno));
 				sal_VideoPrint((320-strlen(errormsg)*8)/2,145-20,errormsg,SAL_RGB(31,8,8));
 				break;
 			case 8:
-				sal_VideoPrint(87,145-36,"Loading...",SAL_RGB(31,31,31));
+				sal_VideoPrint(87,145-36,"加载中...",SAL_RGB(31,31,31));
 				break;
 			case 9:
-				sal_VideoPrint(87,145-36,"Loading failed",SAL_RGB(31,8,8));
+				sal_VideoPrint(87,145-36,"加载失败",SAL_RGB(31,8,8));
 				snprintf(errormsg, sizeof(errormsg), "%s",strerror(errno));
 				sal_VideoPrint((320-strlen(errormsg)*8)/2,145-20,errormsg,SAL_RGB(31,8,8));
 				break;
 			case 12:
-				sal_VideoPrint(95,145-36,"Slot used",SAL_RGB(31,31,31));
+				sal_VideoPrint(95,145-36,"存档已使用",SAL_RGB(31,31,31));
 				sal_VideoPrint((262-(strlen(MENU_TEXT_PREVIEW_SAVESTATE)<<3))>>1,165,MENU_TEXT_PREVIEW_SAVESTATE,SAL_RGB(31,31,31));
 				if(mode==1) sal_VideoPrint((262-(strlen(MENU_TEXT_LOAD_SAVESTATE)<<3))>>1,175,MENU_TEXT_LOAD_SAVESTATE,SAL_RGB(31,31,31));
 				else if(mode==0) sal_VideoPrint((262-(strlen(MENU_TEXT_OVERWRITE_SAVESTATE)<<3))>>1,175,MENU_TEXT_OVERWRITE_SAVESTATE,SAL_RGB(31,31,31));
 				else if(mode==2) sal_VideoPrint((262-(strlen(MENU_TEXT_DELETE_SAVESTATE)<<3))>>1,175,MENU_TEXT_DELETE_SAVESTATE,SAL_RGB(31,31,31));
 				break;
 			case 13:
-				sal_VideoPrint(87,145-36,"Deleting...",SAL_RGB(31,31,31));
+				sal_VideoPrint(87,145-36,"删除中...",SAL_RGB(31,31,31));
 				break;
 		}
 
@@ -1002,7 +1002,7 @@ void ShowCredits()
 
 		// Draw screen:
 		menuSmooth=menuSmooth*7+(menufocus<<8); menuSmooth>>=3;
-		RenderMenu("Credits", menuCount,menuSmooth,menufocus);
+		RenderMenu("致谢", menuCount,menuSmooth,menufocus);
 		sal_VideoFlip(1);
 		usleep(10000);
 	}
@@ -1059,7 +1059,7 @@ void ShowCheats()
 
 		// Draw screen:
 		menuSmooth=menuSmooth*7+(menufocus<<8); menuSmooth>>=3;
-		RenderMenu("Credits", menuCount,menuSmooth,menufocus);
+		RenderMenu("致谢", menuCount,menuSmooth,menufocus);
 		sal_VideoFlip(1);
 		usleep(10000);
 	}
@@ -1072,25 +1072,25 @@ void MainMenuUpdateText(s32 menu_index)
 	switch(menu_index)
 	{
 		case MENU_ROM_SELECT:
-			strcpy(mMenuText[MENU_ROM_SELECT],"Select ROM");
+			strcpy(mMenuText[MENU_ROM_SELECT],"选择游戏");
 			break;
 		case SAVESTATE_MENU_LOAD:
-			strcpy(mMenuText[SAVESTATE_MENU_LOAD],"Load state");
+			strcpy(mMenuText[SAVESTATE_MENU_LOAD],"加载存档");
 			break;
 		case SAVESTATE_MENU_SAVE:
-			strcpy(mMenuText[SAVESTATE_MENU_SAVE],"Save state");
+			strcpy(mMenuText[SAVESTATE_MENU_SAVE],"保存存档");
 			break;
 		case MENU_RESET_GAME:
-			strcpy(mMenuText[MENU_RESET_GAME],"Reset");
+			strcpy(mMenuText[MENU_RESET_GAME],"重置");
 			break;
 		case MENU_EXIT_APP:
-			strcpy(mMenuText[MENU_EXIT_APP],"Exit");
+			strcpy(mMenuText[MENU_EXIT_APP],"退出");
 			break;
 		case MENU_SETTINGS:
-			strcpy(mMenuText[MENU_SETTINGS],"Settings");
+			strcpy(mMenuText[MENU_SETTINGS],"设置");
 			break;
 		case MENU_CHEATS:
-			strcpy(mMenuText[MENU_CHEATS],"Cheats");
+			strcpy(mMenuText[MENU_CHEATS],"金手指");
 			break;
 	}
 }
@@ -1101,38 +1101,38 @@ void SettingsMenuUpdateText(s32 menu_index)
 	switch(menu_index)
 	{
 		case SAVESTATE_MENU_SAVE_SRAM:
-			strcpy(mMenuText[SAVESTATE_MENU_SAVE_SRAM],"Save SRAM now");
+			strcpy(mMenuText[SAVESTATE_MENU_SAVE_SRAM],"保存SRAM");
 
 		case SETTINGS_MENU_AUTO_SAVE_SRAM:
 			sprintf(mMenuText[SETTINGS_MENU_AUTO_SAVE_SRAM],
-						"Save SRAM on change         %s",
-						mMenuOptions->autoSaveSram ? " ON" : "OFF");
+						"SRAM变更自动保存              %s",
+						mMenuOptions->autoSaveSram ? "开" : "关");
 			break;
 
 		case SETTINGS_MENU_SOUND_SYNC:
 			switch (mMenuOptions->soundSync)
 			{
 				case 0:
-					strcpy(mMenuText[SETTINGS_MENU_SOUND_SYNC], "Prefer fluid              Video");
+					strcpy(mMenuText[SETTINGS_MENU_SOUND_SYNC], "优先流                     视频");
 					break;
 				case 1:
-					strcpy(mMenuText[SETTINGS_MENU_SOUND_SYNC], "Prefer fluid               Both");
+					strcpy(mMenuText[SETTINGS_MENU_SOUND_SYNC], "优先流               音频 + 视频");
 					break;
 				default:
-					strcpy(mMenuText[SETTINGS_MENU_SOUND_SYNC], "Prefer fluid              Audio");
+					strcpy(mMenuText[SETTINGS_MENU_SOUND_SYNC], "优先流                     音频");
 					break;
 			}
 
 		case SETTINGS_MENU_SOUND_ON:
-			sprintf(mMenuText[SETTINGS_MENU_SOUND_ON], "Sound                       %s", mMenuOptions->soundEnabled ? " ON" : "OFF");
+			sprintf(mMenuText[SETTINGS_MENU_SOUND_ON], "音频                         %s", mMenuOptions->soundEnabled ? "开" : "关");
 			break;
 
 		case SETTINGS_MENU_SOUND_RATE:
-			sprintf(mMenuText[SETTINGS_MENU_SOUND_RATE],"Sound rate                %5d",mMenuOptions->soundRate);
+			sprintf(mMenuText[SETTINGS_MENU_SOUND_RATE],"音频频率                   %5d",mMenuOptions->soundRate);
 			break;
 
 		case SETTINGS_MENU_SOUND_STEREO:
-			sprintf(mMenuText[SETTINGS_MENU_SOUND_STEREO], "Stereo                      %s", mMenuOptions->stereo ? " ON" : "OFF");
+			sprintf(mMenuText[SETTINGS_MENU_SOUND_STEREO], "立体声                       %s", mMenuOptions->stereo ? "开" : "关");
 			break;
 
 #if 0
@@ -1150,11 +1150,11 @@ void SettingsMenuUpdateText(s32 menu_index)
 			{
 				case 0:
 					strcpy(mMenuText[SETTINGS_MENU_FRAMESKIP],
-						"Frameskip                  AUTO");
+						"跳帧                      自适应");
 					break;
 				default:
 					sprintf(mMenuText[SETTINGS_MENU_FRAMESKIP],
-						"Frameskip                     %1d",mMenuOptions->frameSkip-1);
+						"跳帧                         %1d",mMenuOptions->frameSkip-1);
 					break;
 			}
 			break;
@@ -1163,10 +1163,10 @@ void SettingsMenuUpdateText(s32 menu_index)
 			switch(mMenuOptions->showFps)
 			{
 				case 0:
-					strcpy(mMenuText[SETTINGS_MENU_FPS],"Show FPS                    OFF");
+					strcpy(mMenuText[SETTINGS_MENU_FPS],"显示帧率                     关");
 					break;
 				case 1:
-					strcpy(mMenuText[SETTINGS_MENU_FPS],"Show FPS                     ON");
+					strcpy(mMenuText[SETTINGS_MENU_FPS],"显示帧率                     开");
 					break;
 			}
 			break;
@@ -1175,41 +1175,50 @@ void SettingsMenuUpdateText(s32 menu_index)
 			switch(mMenuOptions->fullScreen)
 			{
 				case 0:
-					strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"Video scaling          ORIGINAL");
+					strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频                        原始");
 					break;
 				case 1:
-					strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"Video scaling              FAST");
+					strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频                    快速全屏");
 					break;
 				case 2:
-					strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"Video scaling            SMOOTH");
+					strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频                    平滑全屏");
 					break;
 				case 3:
-					strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"Video scaling          HARDWARE");
+					strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频                    硬件拉伸");
 					break;
+                case 4:
+                    strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频               双倍硬件拉伸");
+                    break;
+                case 5:
+                    strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频                 双倍-扫描线");
+                    break;
+                case 6:
+                    strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频                 双倍-网格线");
+                    break;
 			}
 
 		case SETTINGS_MENU_LOAD_GLOBAL_SETTINGS:
-			strcpy(mMenuText[SETTINGS_MENU_LOAD_GLOBAL_SETTINGS],"Load global settings");
+			strcpy(mMenuText[SETTINGS_MENU_LOAD_GLOBAL_SETTINGS],"加载全局配置");
 			break;
 
 		case SETTINGS_MENU_SAVE_GLOBAL_SETTINGS:
-			strcpy(mMenuText[SETTINGS_MENU_SAVE_GLOBAL_SETTINGS],"Save global settings");
+			strcpy(mMenuText[SETTINGS_MENU_SAVE_GLOBAL_SETTINGS],"保存全局配置");
 			break;
 
 		case SETTINGS_MENU_LOAD_CURRENT_SETTINGS:
-			strcpy(mMenuText[SETTINGS_MENU_LOAD_CURRENT_SETTINGS],"Load game settings");
+			strcpy(mMenuText[SETTINGS_MENU_LOAD_CURRENT_SETTINGS],"加载游戏设置");
 			break;
 
 		case SETTINGS_MENU_SAVE_CURRENT_SETTINGS:
-			strcpy(mMenuText[SETTINGS_MENU_SAVE_CURRENT_SETTINGS],"Save game settings");
+			strcpy(mMenuText[SETTINGS_MENU_SAVE_CURRENT_SETTINGS],"保存游戏设置");
 			break;
 
 		case SETTINGS_MENU_DELETE_CURRENT_SETTINGS:
-			strcpy(mMenuText[SETTINGS_MENU_DELETE_CURRENT_SETTINGS],"Delete game settings");
+			strcpy(mMenuText[SETTINGS_MENU_DELETE_CURRENT_SETTINGS],"删除游戏设置");
 			break;
 
 		case MENU_CREDITS:
-			strcpy(mMenuText[MENU_CREDITS],"Credits");
+			strcpy(mMenuText[MENU_CREDITS],"致谢");
 			break;
 	}
 }
@@ -1316,7 +1325,7 @@ s32 SettingsMenu(void)
 	{
 		// Draw screen:
 		menuSmooth=menuSmooth*7+(menufocus<<8); menuSmooth>>=3;
-		RenderMenu("Settings", menuCount,menuSmooth,menufocus);
+		RenderMenu("设置", menuCount,menuSmooth,menufocus);
 		sal_VideoFlip(1);
 
 		keys=sal_InputPollRepeat(0);
@@ -1327,7 +1336,7 @@ s32 SettingsMenu(void)
 			{
 				// Draw screen:
 				menuSmooth=menuSmooth*7+(menufocus<<8); menuSmooth>>=3;
-				RenderMenu("Settings", menuCount,menuSmooth,menufocus);
+				RenderMenu("设置", menuCount,menuSmooth,menufocus);
 				sal_VideoFlip(1);
 
 				keys=sal_InputPoll(0);
@@ -1341,7 +1350,7 @@ s32 SettingsMenu(void)
 			{
 				// Draw screen:
 				menuSmooth=menuSmooth*7+(menufocus<<8); menuSmooth>>=3;
-				RenderMenu("Settings", menuCount,menuSmooth,menufocus);
+				RenderMenu("设置", menuCount,menuSmooth,menufocus);
 				sal_VideoFlip(1);
 
 				keys=sal_InputPoll(0);
@@ -1409,7 +1418,7 @@ s32 SettingsMenu(void)
 				case SAVESTATE_MENU_SAVE_SRAM:
 					if(mRomName[0]!=0)
 					{
-						MenuMessageBox("","","Saving SRAM...",MENU_MESSAGE_BOX_MODE_MSG);
+						MenuMessageBox("","","保存 SRAM...",MENU_MESSAGE_BOX_MODE_MSG);
 						S9xSaveSRAM(1);
 						usleep(1e6);
 					}
@@ -1507,12 +1516,12 @@ s32 SettingsMenu(void)
 					if (keys & SAL_INPUT_RIGHT)
 					{
 						mMenuOptions->fullScreen++;
-						if(mMenuOptions->fullScreen > 3) mMenuOptions->fullScreen = 0;
+						if(mMenuOptions->fullScreen > 6) mMenuOptions->fullScreen = 0;
 					}
 					else
 					{
 						mMenuOptions->fullScreen--;
-						if(mMenuOptions->fullScreen > 3) mMenuOptions->fullScreen = 3;
+						if(mMenuOptions->fullScreen > 6) mMenuOptions->fullScreen = 6;
 					}
 					SettingsMenuUpdateText(SETTINGS_MENU_FULLSCREEN);
 					break;
@@ -1578,7 +1587,7 @@ s32 MenuRun(s8 *romName)
 	{
 		// Draw screen:
 		menuSmooth=menuSmooth*7+(menufocus<<8); menuSmooth>>=3;
-		RenderMenu("Main Menu", menuCount,menuSmooth,menufocus);
+		RenderMenu("主菜单", menuCount,menuSmooth,menufocus);
 		sal_VideoFlip(1);
 
 		keys=sal_InputPollRepeat(0);
@@ -1589,7 +1598,7 @@ s32 MenuRun(s8 *romName)
 			{
 				// Draw screen:
 				menuSmooth=menuSmooth*7+(menufocus<<8); menuSmooth>>=3;
-				RenderMenu("Main Menu", menuCount,menuSmooth,menufocus);
+				RenderMenu("主菜单", menuCount,menuSmooth,menufocus);
 				sal_VideoFlip(1);
 
 				keys=sal_InputPoll(0);

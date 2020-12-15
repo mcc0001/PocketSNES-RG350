@@ -148,6 +148,7 @@ bool8_32 S9xInitUpdate ()
 	if (mInMenu) return TRUE;
 
 #ifdef GCW_ZERO
+	//littlehui modify
 	if (mMenuOptions.fullScreen == 3) GFX.Screen = (uint8*) mScreen->pixels;
 	else
 #endif
@@ -176,9 +177,14 @@ bool8_32 S9xDeinitUpdate (int Width, int Height, bool8_32)
 		sal_VideoSetPAL(mMenuOptions.fullScreen, PAL);
 		LastPAL = PAL;
 	}
-
+	//littlehui debug
+    FILE *fp;
+    fp = fopen("/media/home/pocketsnes.txt", "w");
+    //fprintf(fp, "%s", cheat_file_path);
+    fprintf(fp, "%d",  PAL);
+    fclose(fp);
 	switch (mMenuOptions.fullScreen)
-	{
+	{//TODO littlehui
 		case 0: /* No scaling */
 		// case 3: /* Hardware scaling */
 		{
@@ -206,10 +212,44 @@ bool8_32 S9xDeinitUpdate (int Width, int Height, bool8_32)
 		case 2: /* Smooth software scaling */
 			if (PAL) {
 				upscale_256x240_to_320x240_bilinearish((uint32_t*) sal_VideoGetBuffer() + 160, (uint32_t*) IntermediateScreen, SNES_WIDTH);
-			} else {
+                //upscale_256x240_to_640x480_bilinearish((uint32_t*) sal_VideoGetBuffer() + 320, (uint32_t*) IntermediateScreen, SNES_WIDTH);
+            } else {
 				upscale_256x224_to_320x240_bilinearish((uint32_t*) sal_VideoGetBuffer() + 160, (uint32_t*) IntermediateScreen, SNES_WIDTH);
-			}
+                //upscale_256x224_to_640x480_bilinearish((uint32_t*) sal_VideoGetBuffer() + 320, (uint32_t*) IntermediateScreen, SNES_WIDTH);
+                //upscale_256x224_to_512x480((uint32_t*) sal_VideoGetBuffer() + 256, (uint32_t*) IntermediateScreen, SNES_WIDTH);
+
+            }
 			break;
+	    case 4:
+            //littlehui debug
+            if (PAL) {
+                upscale_256x240_to_512x480((uint32_t*) sal_VideoGetBuffer() + 256, (uint32_t*) IntermediateScreen, SNES_WIDTH);
+                //upscale_256x240_to_640x480_bilinearish((uint32_t*) sal_VideoGetBuffer() + 160, (uint32_t*) IntermediateScreen, SNES_WIDTH);
+            } else {
+                upscale_256x224_to_512x448((uint32_t*) sal_VideoGetBuffer() + 256, (uint32_t*) IntermediateScreen, SNES_WIDTH);
+                //upscale_256x224_to_512x480((uint32_t*) sal_VideoGetBuffer() + 256, (uint32_t*) IntermediateScreen, SNES_WIDTH);
+            }
+	        break;
+	    case 5:
+            //TODO littlehui
+	        // double scanline
+            if (PAL) {
+                upscale_256x240_to_512x480_scanline((uint32_t*) sal_VideoGetBuffer() + 256, (uint32_t*) IntermediateScreen, SNES_WIDTH);
+                //upscale_256x240_to_640x480_bilinearish((uint32_t*) sal_VideoGetBuffer() + 160, (uint32_t*) IntermediateScreen, SNES_WIDTH);
+            } else {
+                upscale_256x224_to_512x448_scanline((uint32_t*) sal_VideoGetBuffer() + 256 * 16, (uint32_t*) IntermediateScreen, SNES_WIDTH);
+            }
+	        break;
+	    case 6:
+            //TODO littlehui
+	        //double grid
+            if (PAL) {
+                upscale_256x240_to_512x480_grid((uint32_t*) sal_VideoGetBuffer() + 256, (uint32_t*) IntermediateScreen, SNES_WIDTH);
+                //upscale_256x240_to_640x480_bilinearish((uint32_t*) sal_VideoGetBuffer() + 160, (uint32_t*) IntermediateScreen, SNES_WIDTH);
+            } else {
+                upscale_256x224_to_512x448_grid((uint32_t*) sal_VideoGetBuffer() + 256 * 16, (uint32_t*) IntermediateScreen, SNES_WIDTH);
+            }
+	        break;
 	}
 
 	u32 newTimer;
@@ -257,6 +297,21 @@ const char *S9xGetFilename (const char *ex)
 	strcat (dir, ex);
 
 	return (dir);
+}
+
+const char *S9xGetCheatFilename (const char *ex)
+{
+    static char dir [SAL_MAX_PATH];
+    char fname [SAL_MAX_PATH];
+    char ext [SAL_MAX_PATH];
+
+    sal_DirectorySplitFilename(Memory.ROMFilename, dir, fname, ext);
+    strcpy(dir, sal_DirectoryGetHome());
+    strcat(dir, "/cheats");
+    sal_DirectoryCombine(dir,fname);
+    strcat (dir, ex);
+
+    return (dir);
 }
 
 extern struct SAVE_STATE mSaveState[10];
@@ -594,6 +649,7 @@ int SnesInit()
 	Settings.SDD1 = TRUE;
 
 #ifdef GCW_ZERO
+	//littlehui moidfy
 	if (mMenuOptions.fullScreen == 3) GFX.Screen = (uint8*) mScreen->pixels;
 	else
 #endif

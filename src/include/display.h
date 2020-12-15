@@ -130,6 +130,8 @@ const char *S9xGetROMDirectory ();
 const char *S9xGetSRAMFilename ();
 const char *S9xGetFilename (const char *extension);
 const char *S9xGetFilenameInc (const char *);
+const char *S9xGetCheatFilename (const char *extension);
+
 END_EXTERN_C
 
 #endif

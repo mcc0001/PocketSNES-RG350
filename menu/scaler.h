@@ -12,3 +12,20 @@ extern void (*upscale_p)(uint32_t *dst, uint32_t *src, int width);
 extern void upscale_256x240_to_320x240(uint32_t *dst, uint32_t *src, int width);
 extern void upscale_256x224_to_320x240_bilinearish(uint32_t *dst, uint32_t *src, int width);
 extern void upscale_256x240_to_320x240_bilinearish(uint32_t* dst, uint32_t* src, int width);
+
+extern void upscale_256x240_to_640x480_bilinearish(uint32_t* dst, uint32_t* src, int width);
+extern void upscale_256x224_to_640x480_bilinearish(uint32_t *dst, uint32_t *src, int width);
+
+void upscale_256x224_to_512x480(uint32_t *dst, uint32_t *src, int width);
+void upscale_256x240_to_512x480(uint32_t *dst, uint32_t *src, int width);
+
+void upscale_256x224_to_512x480_scanline(uint32_t *dst, uint32_t *src, int width);
+void upscale_256x240_to_512x480_scanline(uint32_t *dst, uint32_t *src, int width);
+
+
+void upscale_256x224_to_512x480_grid(uint32_t *dst, uint32_t *src, int width);
+void upscale_256x240_to_512x480_grid(uint32_t *dst, uint32_t *src, int width);
+
+void upscale_256x224_to_512x448(uint32_t *dst, uint32_t *src, int width);
+void upscale_256x224_to_512x448_scanline(uint32_t *dst, uint32_t *src, int width);
+void upscale_256x224_to_512x448_grid(uint32_t *dst, uint32_t *src, int width);

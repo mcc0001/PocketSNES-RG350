@@ -1,0 +1,26 @@
+RG350M SNES 模拟器 PocketSNES
+
+版本号：V1.43-M1
+
+功能:
+1. 汉化菜单。
+2. 增加网格扫描和横扫滤镜。
+3. L3快速保存，R3快速加载。
+
+时间：20201212
+
+版本号说明：
+V1.43  依赖的Snex9x主版本。
+MX 修改的版号。
+
+--------------------------------------------------
+金手指使用:
+将 "游戏名.cht"金手指文件放到  .pocketsnes/cheats 目录下即可。
+金手指文件格式：
+Address(6 bit)-fixdata(2)-rawdata(2) #功能名称
+例子：
+7e1f8a-1e-03 #Infinite HP
+
+源码：https://github.com/littlehui/PocketSNES-RG350
+                                      littlehui
+                                       20201212

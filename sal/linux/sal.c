@@ -203,9 +203,12 @@ u32 sal_VideoInit(u32 bpp)
 	sal_LastErrorSet("SDL_SetVideoMode failed");
 	return SAL_ERROR;
 	}
+    //StarseedPro-2.ttf
+	//mFont = TTF_OpenFont("unifont-13.0.02.ttf", 15);
+    //mFont = TTF_OpenFont("StarseedPro-2.ttf", 15);
+    mFont = TTF_OpenFont("myfont.ttf", 15);
 
-	mFont = TTF_OpenFont("unifont-13.0.02.ttf", 15);
-	if (mFont == NULL)
+    if (mFont == NULL)
 	{
 		sal_LastErrorSet("Can't load font");
 		return SAL_ERROR;
@@ -235,11 +238,30 @@ void sal_VideoEnterGame(u32 fullscreenOption, u32 pal, u32 refreshRate)
 	/* Copied from C++ headers which we can't include in C */
 	unsigned int Width = 256 /* SNES_WIDTH */,
 	             Height = pal ? 239 /* SNES_HEIGHT_EXTENDED */ : 224 /* SNES_HEIGHT */;
-	if (fullscreenOption != 3)
+	             //<3 not hardware
+	unsigned int WIDTHX2 = 512, HEIGHTX2 = pal ? 476 : 448;
+	if (fullscreenOption < 3)
 	{
 		Width = SAL_SCREEN_WIDTH;
 		Height = SAL_SCREEN_HEIGHT;
 	}
+	//hardware scala  X2
+	if (fullscreenOption > 3) {
+	    Width = 512;
+	    //Height = pal ? 480 /* SNES_HEIGHT_EXTENDED */ : 448 /* SNES_HEIGHT */;
+	    if (fullscreenOption == 4) {
+	    //littlehui modify
+	     Height = pal ? 480 /* SNES_HEIGHT_EXTENDED */ : 448 /* SNES_HEIGHT */;
+	    } else {
+	      	//pal set 448 scanline not suitable
+	        Height = 480;
+	    }
+	}
+/*	if (fullscreenOption == 4) {
+	    //littlehui modify
+	    Width = 512;
+	    Height = 448;
+	}*/
 	if (SDL_MUSTLOCK(mScreen)) SDL_UnlockSurface(mScreen);
 	mScreen = SDL_SetVideoMode(Width, Height, mBpp, SDL_HWSURFACE |
 #ifdef SDL_TRIPLEBUF
@@ -255,7 +277,8 @@ void sal_VideoEnterGame(u32 fullscreenOption, u32 pal, u32 refreshRate)
 
 void sal_VideoSetPAL(u32 fullscreenOption, u32 pal)
 {
-	if (fullscreenOption == 3) /* hardware scaling */
+    //littlehui modify
+	if (fullscreenOption >= 3) /* hardware scaling */
 	{
 		sal_VideoEnterGame(fullscreenOption, pal, mRefreshRate);
 	}
