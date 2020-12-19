@@ -13,6 +13,7 @@
 #include "soundux.h"
 #include "snapshot.h"
 #include "scaler.h"
+#include "snes9x.h"
 
 #define SNES_SCREEN_WIDTH  256
 #define SNES_SCREEN_HEIGHT 192
@@ -250,6 +251,15 @@ bool8_32 S9xDeinitUpdate (int Width, int Height, bool8_32)
                 upscale_256x224_to_512x448_grid((uint32_t*) sal_VideoGetBuffer() + 256 * 16, (uint32_t*) IntermediateScreen, SNES_WIDTH);
             }
 	        break;
+        case 7:
+            //TODO littlehui
+            // double fast
+            if (PAL) {
+                upscale_256x240_to_256x480_scanline((uint32_t*) sal_VideoGetBuffer() + 256, (uint32_t*) IntermediateScreen, SNES_WIDTH);
+            } else {
+                upscale_256x224_to_256x448_scanline((uint32_t*) sal_VideoGetBuffer() + 256 * 8, (uint32_t*) IntermediateScreen, SNES_WIDTH);
+            }
+            break;
 	}
 
 	u32 newTimer;
@@ -316,23 +326,30 @@ const char *S9xGetCheatFilename (const char *ex)
 
 extern struct SAVE_STATE mSaveState[10];
 extern s32 saveno;
-
+extern u16 mTempFb[SNES_WIDTH*SNES_HEIGHT_EXTENDED*2];
 uint32 S9xReadJoypad (int which1)
 {
+
 	uint32 val=0x80000000;
 	if (mInMenu || which1 > 1) return val;
 
 	u32 joy = sal_InputPoll(which1);
 
 	if (joy & SAL_INPUT_MENU) {
+	    //littlehui modify
 		mEnterMenu = 1;
-		return val;
+        //fprintf(stderr, "S9xReadJoypad  SAL_INPUT_MENU\n");
+        return val;
 	} else if (joy & SAL_INPUT_QUICKLOAD) {
-		LoadStateFile(mSaveState[saveno].fullFilename);
-		return val;
+        if (mSaveState[saveno].fullFilename[0] == '\0') {
+            ScanSaveStates(mRomName);
+        }
+        LoadStateFile(mSaveState[saveno].fullFilename);
+        return val;
 	} else if (joy & SAL_INPUT_QUICKSAVE) {
-		SaveStateFile(mSaveState[saveno].fullFilename);
-		return val;
+	    //quick save in menu
+        mEnterMenu = 2;
+        return val;
 	}
 
 #if 0
@@ -543,7 +560,6 @@ int Run(int sound)
 		sal_AudioSetMuted(1);
 	}
 	sal_AudioResume();
-
   	while(!mEnterMenu)
   	{
 		//Run SNES for one glorious frame
@@ -554,11 +570,13 @@ int Run(int sound)
 		SamplesDoneThisFrame = 0;
 		so.err_counter = 0;
   	}
+  	//quick save mEnterMenu == 2
 
 	sal_AudioPause();
-
 	sal_VideoExitGame();
-
+    if (mEnterMenu == 2) {
+        return mEnterMenu;
+    }
 	mEnterMenu=0;
 	return mEnterMenu;
 
@@ -779,12 +797,17 @@ int mainEntry(int argc, char* argv[])
 		sal_Reset();
 		return 0;
 	}
-
+	//1. normal menu
+	//2. quick save
+    int interruptMenuEvent = 0;
 	while(1)
 	{
 		mInMenu=1;
-		event=MenuRun(mRomName);
+		event=MenuRun(mRomName, interruptMenuEvent);
 		mInMenu=0;
+        mEnterMenu = 0;
+        interruptMenuEvent = 0;
+        fprintf(stderr, "MainEntry return TO mainEntry interruptMenuEvent %d\n", interruptMenuEvent);
 
 		if(event==EVENT_LOAD_ROM)
 		{
@@ -817,16 +840,20 @@ int mainEntry(int argc, char* argv[])
 
 		if(event==EVENT_RUN_ROM)
 		{
-			sal_AudioSetVolume(mMenuOptions.volume,mMenuOptions.volume);
+            fprintf(stderr, "RETURN EVENT_RUN_ROM\n");
+
+            sal_AudioSetVolume(mMenuOptions.volume,mMenuOptions.volume);
 			sal_CpuSpeedSet(mMenuOptions.cpuSpeed);
 			mFramesCleared = 0;
-			if(mMenuOptions.soundEnabled)
-				RunSound();
-			else	RunNoSound();
-
+			if(mMenuOptions.soundEnabled) {
+                interruptMenuEvent = RunSound();
+			} else
+                interruptMenuEvent = RunNoSound();
+/*            if (interruptMenuEvent == 2) {
+                event = EVENT_QUICK_SAVE;
+            }*/
 			event=EVENT_NONE;
 		}
-
 		if(event==EVENT_EXIT_APP) break;
 	}
 

@@ -21,6 +21,7 @@ static s32 mMenutileXscroll=0;
 static s32 mMenutileYscroll=0;
 static s32 mTileCounter=0;
 static s32 mQuickSavePresent=0;
+//littlehui modify
 static u32 mPreviewingState=0;
 
 static s8 mMenuText[30][MAX_DISPLAY_CHARS];
@@ -34,7 +35,7 @@ static s8 mSaveStateName[SAL_MAX_PATH]={""};       // holds the last filename to
 static s8 mRomName[SAL_MAX_PATH]={""};
 static s8 mSystemDir[SAL_MAX_PATH];
 static struct MENU_OPTIONS *mMenuOptions=NULL;
-static u16 mTempFb[SNES_WIDTH*SNES_HEIGHT_EXTENDED*2];
+u16 mTempFb[SNES_WIDTH*SNES_HEIGHT_EXTENDED*2];
 
 static char errormsg[MAX_DISPLAY_CHARS];
 
@@ -643,13 +644,15 @@ s32 FileSelect()
 	return action;
 }
 
-static void ScanSaveStates(s8 *romname)
+void ScanSaveStates(s8 *romname)
 {
 	s32 i=0;
 	s8 savename[SAL_MAX_PATH];
 	s8 filename[SAL_MAX_PATH];
 	s8 ext[SAL_MAX_PATH];
 	s8 path[SAL_MAX_PATH];
+
+    //fprintf(stderr, "ScanSaveStates  mSaveStateName %s\n", mSaveStateName);
 
 	if(!strcmp(romname,mSaveStateName)) return; // is current save state rom so exit
 
@@ -667,7 +670,10 @@ static void ScanSaveStates(s8 *romname)
 		*/
 		sprintf(mSaveState[i].filename,"%s%d",savename,i);
 		sprintf(mSaveState[i].fullFilename,"%s%s%s",mSystemDir,SAL_DIR_SEP,mSaveState[i].filename);
-		if (sal_FileExists(mSaveState[i].fullFilename)==SAL_TRUE)
+		//TODO littlehui debug
+        //fprintf(stderr, "ScanSaveStates  fullFilName %s\n", mSaveState[i].fullFilename);
+
+        if (sal_FileExists(mSaveState[i].fullFilename)==SAL_TRUE)
 		{
 			// we have a savestate
 			mSaveState[i].inUse = 1;
@@ -681,27 +687,37 @@ static void ScanSaveStates(s8 *romname)
 	strcpy(mSaveStateName,romname);  // save the last scanned romname
 }
 
-static
+//static
 bool8 LoadStateTemp()
 {
 	char name[SAL_MAX_PATH];
 	bool8 ret;
 	sprintf(name, "%s%s%s", sal_DirectoryGetTemp(), SAL_DIR_SEP, ".svt");
 	if (!(ret = S9xUnfreezeGame(name)))
-		fprintf(stderr, "Failed to read saved state at %s: %s\n", name, strerror(errno));
+		fprintf(stderr, "LoadStateTemp Failed to read saved state at %s: %s\n", name, strerror(errno));
 	return ret;
 }
 
-static
+bool LoadStateTempNew()
+{
+    char name[SAL_MAX_PATH];
+    bool ret;
+    sprintf(name, "%s%s%s", sal_DirectoryGetTemp(), SAL_DIR_SEP, ".svt");
+    if (!(ret = S9xUnfreezeGame(name)))
+        fprintf(stderr, "LoadStateTemp Failed to read saved state at %s: %s\n", name, strerror(errno));
+    return ret;
+}
+
+//static
 void SaveStateTemp()
 {
 	char name[SAL_MAX_PATH];
 	sprintf(name, "%s%s%s", sal_DirectoryGetTemp(), SAL_DIR_SEP, ".svt");
 	if (!S9xFreezeGame(name))
-		fprintf(stderr, "Failed to write saved state at %s: %s\n", name, strerror(errno));
+		fprintf(stderr, "SaveStateTemp Failed to write saved state at %s: %s\n", name, strerror(errno));
 }
 
-static
+//static
 void DeleteStateTemp()
 {
 	char name[SAL_MAX_PATH];
@@ -714,8 +730,10 @@ bool LoadStateFile(s8 *filename)
 {
 	bool ret;
 	if (!(ret = S9xUnfreezeGame(filename)))
-		fprintf(stderr, "Failed to read saved state at %s: %s\n", filename, strerror(errno));
-	return ret;
+		fprintf(stderr, "LoadStateFile Failed to read saved state at %s: %s\n", filename, strerror(errno));
+	else
+        fprintf(stderr, "LoadStateFile success to read saved state at %s\n", filename);
+    return ret;
 }
 
 // static
@@ -723,8 +741,10 @@ bool SaveStateFile(s8 *filename)
 {
 	bool ret;
 	if (!(ret = S9xFreezeGame(filename)))
-		fprintf(stderr, "Failed to write saved state at %s: %s\n", filename, strerror(errno));
-	return ret;
+		fprintf(stderr, "SaveStateFile Failed to write saved state at %s: %s\n", filename, strerror(errno));
+	else
+        fprintf(stderr, "SaveStateFile success to write saved state at %s\n", filename);
+    return ret;
 }
 
 u32 IsPreviewingState()
@@ -733,13 +753,18 @@ u32 IsPreviewingState()
 }
 
 s32 saveno=0; // save state number
+
 static s32 SaveStateSelect(s32 mode)
 {
+
 	s8 text[128];
 	s32 action=11;
 	u32 keys=0;
+    bool quickSaveFlag = false;
 	u16 *pixTo,*pixFrom;
-
+	if (mode == 3) {
+	    quickSaveFlag = true;
+	}
 	if(mRomName[0]==0)
 	{
 		// no rom loaded
@@ -753,8 +778,12 @@ static s32 SaveStateSelect(s32 mode)
 
 	while (action!=0&&action!=100)
 	{
-		keys=sal_InputPollRepeat(0);
-
+	    //quick save
+	    if (quickSaveFlag) {
+	        action = 6;
+	    } else {
+            keys=sal_InputPollRepeat(0);
+        }
 		if(keys&SAL_INPUT_UP || keys&SAL_INPUT_LEFT) {saveno--; action=1;}
 		if(keys&SAL_INPUT_DOWN || keys&SAL_INPUT_RIGHT) {saveno++; action=1;}
 		if(saveno<0) saveno=9;
@@ -820,6 +849,9 @@ static s32 SaveStateSelect(s32 mode)
 				if(mode==1) sal_VideoPrint((262-(strlen(MENU_TEXT_LOAD_SAVESTATE)<<3))>>1,191,MENU_TEXT_LOAD_SAVESTATE,SAL_RGB(31,31,31));
 				else if(mode==0) sal_VideoPrint((262-(strlen(MENU_TEXT_OVERWRITE_SAVESTATE)<<3))>>1,191,MENU_TEXT_OVERWRITE_SAVESTATE,SAL_RGB(31,31,31));
 				else if(mode==2) sal_VideoPrint((262-(strlen(MENU_TEXT_DELETE_SAVESTATE)<<3))>>1,191,MENU_TEXT_DELETE_SAVESTATE,SAL_RGB(31,31,31));
+				if (mode == 3) {
+				    action = 100;
+				}
 				break;
 			}
 			case 6:
@@ -876,7 +908,7 @@ static s32 SaveStateSelect(s32 mode)
 					IPPU.RenderThisFrame=TRUE;
 					unsigned int fullScreenSave = mMenuOptions->fullScreen;
 					mMenuOptions->fullScreen = 0;
-					S9xMainLoop ();
+                    S9xMainLoop ();
 					mMenuOptions->fullScreen = fullScreenSave;
 					sal_AudioSetMuted(0);
 					mPreviewingState = 0;
@@ -889,13 +921,15 @@ static s32 SaveStateSelect(s32 mode)
 			case 6:
 				//Reload state in case user has been previewing
 				LoadStateTemp();
-				if (SaveStateFile(mSaveState[saveno].fullFilename)) {
+                if (SaveStateFile(mSaveState[saveno].fullFilename)) {
 					mSaveState[saveno].inUse=1;
-					action=1;
-				} else {
+                    action=1;
+                } else {
 					action=7; // did not saved correctly; report an error
 				}
-				break;
+                //run once
+                quickSaveFlag = false;
+                break;
 			// case 7:
 				// action=1;
 				// break;
@@ -1194,6 +1228,9 @@ void SettingsMenuUpdateText(s32 menu_index)
                     break;
                 case 6:
                     strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频                 双倍-网格线");
+                    break;
+                case 7:
+                    strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频                 扫描线-快速");
                     break;
 			}
 
@@ -1516,12 +1553,12 @@ s32 SettingsMenu(void)
 					if (keys & SAL_INPUT_RIGHT)
 					{
 						mMenuOptions->fullScreen++;
-						if(mMenuOptions->fullScreen > 6) mMenuOptions->fullScreen = 0;
+						if(mMenuOptions->fullScreen > 7) mMenuOptions->fullScreen = 0;
 					}
 					else
 					{
 						mMenuOptions->fullScreen--;
-						if(mMenuOptions->fullScreen > 6) mMenuOptions->fullScreen = 6;
+						if(mMenuOptions->fullScreen > 7) mMenuOptions->fullScreen = 7;
 					}
 					SettingsMenuUpdateText(SETTINGS_MENU_FULLSCREEN);
 					break;
@@ -1553,13 +1590,20 @@ s32 SettingsMenu(void)
   return action;
 }
 
-s32 MenuRun(s8 *romName)
+s32 MenuRun(s8 *romName, int interruptMenuEvent)
 {
+    //if
 	s32 menuExit=0,menuCount=MENU_COUNT,menufocus=0,menuSmooth=0;
 	s32 action=EVENT_NONE;
 	s32 subaction=0;
 	u32 keys=0;
+	bool quickSaveFlag = false;
+    fprintf(stderr, "interruptMenuEvent %d\n", interruptMenuEvent);
 
+    if (interruptMenuEvent == 2) {
+        fprintf(stderr, "set quickFlag true\n");
+        quickSaveFlag = true;
+    }
 	sal_CpuSpeedSet(MENU_NORMAL_CPU_SPEED);
 
 	if(sal_StringCompare(mRomName,romName)!=0)
@@ -1590,11 +1634,11 @@ s32 MenuRun(s8 *romName)
 		RenderMenu("主菜单", menuCount,menuSmooth,menufocus);
 		sal_VideoFlip(1);
 
-		keys=sal_InputPollRepeat(0);
-
-		if (keys & INP_BUTTON_MENU_SELECT)
+        keys=sal_InputPollRepeat(0);
+        if (keys & INP_BUTTON_MENU_SELECT || quickSaveFlag)
 		{
-			while (keys)
+		    //quick save
+            while (keys)
 			{
 				// Draw screen:
 				menuSmooth=menuSmooth*7+(menufocus<<8); menuSmooth>>=3;
@@ -1604,8 +1648,14 @@ s32 MenuRun(s8 *romName)
 				keys=sal_InputPoll(0);
 
 				usleep(10000);
+				if (quickSaveFlag) {
+                    keys = 0;
+				}
 			}
-
+			//quick save
+            if (quickSaveFlag) {
+                menufocus = SAVESTATE_MENU_SAVE;
+            }
 			switch(menufocus)
 			{
 				case MENU_ROM_SELECT:
@@ -1627,8 +1677,22 @@ s32 MenuRun(s8 *romName)
 					}
 					break;
 				case SAVESTATE_MENU_SAVE:
-					SaveStateSelect(SAVESTATE_MODE_SAVE);
+				    if (quickSaveFlag) {
+                        subaction = SaveStateSelect(SAVESTATE_MODE_QUICK_SAVE);
+                        quickSaveFlag = false;
+                        if(subaction==100)
+                        {
+                            menuExit=1;
+                            action=EVENT_RUN_ROM;
+                        }
+                    } else {
+                        SaveStateSelect(SAVESTATE_MODE_SAVE);
+                    }
 					break;
+/*			    case SAVESTATE_MENU_QUICK_SAVE:
+			        //quick save
+                    SaveStateSelect(SAVESTATE_MENU_QUICK_SAVE);
+                    break;*/
 				case MENU_SETTINGS:
 					SettingsMenu();
 					MainMenuUpdateTextAll();
@@ -1683,6 +1747,6 @@ s32 MenuRun(s8 *romName)
 	}
 
   sal_InputWaitForRelease();
-
+	fprintf(stderr, "Return To Menurun mode and action %d \n", action);
   return action;
 }

@@ -80,6 +80,8 @@ static u32 sal_Input(int held, u32 j)
 		if (keys[SDLK_END] || keys[SDLK_HOME] || (keys[SDLK_ESCAPE] && keys[SDLK_RETURN])) inputHeld[j] |= SAL_INPUT_MENU;
 		if (keys[SDLK_ESCAPE] && keys[SDLK_TAB]) inputHeld[j] |= SAL_INPUT_QUICKLOAD;
 		if (keys[SDLK_ESCAPE] && keys[SDLK_BACKSPACE]) inputHeld[j] |= SAL_INPUT_QUICKSAVE;
+        //if (keys[SDLK_KP_DIVIDE]) inputHeld[j] |= SAL_INPUT_QUICKSAVE;
+        //if (keys[SDLK_KP_PERIOD]) inputHeld[j] |= SAL_INPUT_QUICKLOAD;
 
 		SDL_Event event;
 		if (!SDL_PollEvent(&event)) {
@@ -91,10 +93,19 @@ static u32 sal_Input(int held, u32 j)
 			switch (event.type) {
 			case SDL_KEYDOWN:
 				switch (event.key.keysym.sym) {
-				case SDLK_HOME:
-					extraKeys |= SAL_INPUT_MENU;
-					break;
-				}
+				    case SDLK_HOME:
+                        fprintf(stderr, "sal_Input the input is SDL_KEYDOWN\n");
+                        extraKeys |= SAL_INPUT_MENU;
+					    break;
+				    case SDLK_KP_DIVIDE :
+                        fprintf(stderr, "sal_Input the SDL_KEYDOWN is SDLK_KP_DIVIDE\n");
+                        extraKeys |= SAL_INPUT_QUICKSAVE;
+                        break;
+                    case SDLK_KP_PERIOD :
+                        fprintf(stderr, "sal_Input the SDL_KEYDOWN is SDLK_KP_PERIOD\n");
+                        extraKeys |= SAL_INPUT_QUICKLOAD;
+                        break;
+                }
 				break;
 			}
 		} while(SDL_PollEvent(&event));
@@ -206,7 +217,7 @@ u32 sal_VideoInit(u32 bpp)
     //StarseedPro-2.ttf
 	//mFont = TTF_OpenFont("unifont-13.0.02.ttf", 15);
     //mFont = TTF_OpenFont("StarseedPro-2.ttf", 15);
-    mFont = TTF_OpenFont("myfont.ttf", 15);
+    mFont = TTF_OpenFont("/usr/share/gmenu2x/skins/Default/fonts/SourceHanSans-Regular-04.ttf", 15);
 
     if (mFont == NULL)
 	{
@@ -255,6 +266,9 @@ void sal_VideoEnterGame(u32 fullscreenOption, u32 pal, u32 refreshRate)
 	    } else {
 	      	//pal set 448 scanline not suitable
 	        Height = 480;
+	    }
+	    if (fullscreenOption == 7) {
+	        Width = 256;
 	    }
 	}
 /*	if (fullscreenOption == 4) {

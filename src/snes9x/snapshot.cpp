@@ -590,7 +590,8 @@ bool8 S9xUnfreezeGame (const char *filename)
 		return (TRUE);
 
 	FILE* fp;
-	fp = fopen(filename, "r");
+
+    fp = fopen(filename, "r");
 	if(NULL == fp)
 		return (FALSE);
 

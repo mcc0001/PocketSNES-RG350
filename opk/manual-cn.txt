@@ -4,8 +4,8 @@ RG350M SNES 模拟器 PocketSNES
 
 功能:
 1. 汉化菜单。
-2. 增加网格扫描和横扫滤镜。
-3. L3快速保存，R3快速加载。
+2. 增加网格扫描线和横扫线扫描线-快速滤镜。
+3. L3快速存档,R3快速加载。
 
 时间：20201212
 
@@ -23,4 +23,4 @@ Address(6 bit)-fixdata(2)-rawdata(2) #功能名称
 
 源码：https://github.com/littlehui/PocketSNES-RG350
                                       littlehui
-                                       20201212
+                                       20201219

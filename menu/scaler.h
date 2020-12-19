@@ -29,3 +29,6 @@ void upscale_256x240_to_512x480_grid(uint32_t *dst, uint32_t *src, int width);
 void upscale_256x224_to_512x448(uint32_t *dst, uint32_t *src, int width);
 void upscale_256x224_to_512x448_scanline(uint32_t *dst, uint32_t *src, int width);
 void upscale_256x224_to_512x448_grid(uint32_t *dst, uint32_t *src, int width);
+
+void upscale_256x224_to_256x448_scanline(uint32_t *dst, uint32_t *src, int width);
+void upscale_256x240_to_256x480_scanline(uint32_t *dst, uint32_t *src, int width);

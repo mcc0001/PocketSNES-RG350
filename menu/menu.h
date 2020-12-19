@@ -14,6 +14,7 @@
 #define SAVESTATE_MODE_SAVE			0
 #define SAVESTATE_MODE_LOAD			1
 #define SAVESTATE_MODE_DELETE		2
+#define SAVESTATE_MODE_QUICK_SAVE	3
 
 #define POCKETSNES_VERSION			"version 2"
 
@@ -24,6 +25,7 @@ enum  MENU_ENUM
 {
 	SAVESTATE_MENU_LOAD,
 	SAVESTATE_MENU_SAVE,
+	//SAVESTATE_MENU_QUICK_SAVE,
 	// SAVESTATE_MENU_DELETE,
 	// MENU_STATE,
 	MENU_SETTINGS,
@@ -83,6 +85,7 @@ enum EVENT_TYPES
 	EVENT_LOAD_ROM,
 	EVENT_RUN_ROM,
 	EVENT_RESET_ROM,
+	EVENT_QUICK_SAVE,
 };
 
 enum MENU_MESSAGE_BOX_MODE
@@ -109,10 +112,10 @@ enum MENU_MESSAGE_BOX_MODE
 #define INP_BUTTON_MENU_QUICKSAVE2		SAL_INPUT_SELECT
 #define INP_BUTTON_MENU_QUICKLOAD1		SAL_INPUT_L
 #define INP_BUTTON_MENU_QUICKLOAD2		SAL_INPUT_SELECT
-#define MENU_TEXT_LOAD_SAVESTATE 		"Press A to load"
-#define MENU_TEXT_OVERWRITE_SAVESTATE	"A to overwrite | X to delete"
-#define MENU_TEXT_DELETE_SAVESTATE 		"Press X to delete"
-#define MENU_TEXT_PREVIEW_SAVESTATE 	"Press Y to preview"
+#define MENU_TEXT_LOAD_SAVESTATE 		"按 A 加载"
+#define MENU_TEXT_OVERWRITE_SAVESTATE	"A 覆盖 | X 删除"
+#define MENU_TEXT_DELETE_SAVESTATE 		"按 A 删除"
+#define MENU_TEXT_PREVIEW_SAVESTATE 	"按 Y 预览"
 
 
 struct MENU_OPTIONS
@@ -156,7 +159,7 @@ struct SAVE_STATE
 //# Functions
 //####################################
 void MenuInit(const char *systemDir, struct MENU_OPTIONS *menuOptions);
-s32 MenuRun(s8 *romName);
+s32 MenuRun(s8 *romName, int interruptMenuEvent);
 //void LoadSram(const char *path, const char *romname, const char *ext, const char *srammem);
 //void SaveSram(const char *path, const char *romname, const char *ext, const char *srammem);
 //void DeleteSram(const char *path, const char *romname, const char *ext);
@@ -179,5 +182,10 @@ u32 IsPreviewingState();
 bool LoadStateFile(s8 *filename);
 bool SaveStateFile(s8 *filename);
 
+void ScanSaveStates(s8 *romname);
 
+bool LoadStateTempNew();
+void DeleteStateTemp();
+void SaveStateTemp();
+//u16 mTempFb[SNES_WIDTH*SNES_HEIGHT_EXTENDED*2];
 #endif /* _MENU_H_ */

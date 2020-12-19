@@ -2855,7 +2855,7 @@ void S9xUpdateJoypads ()
 
 	for (i = 0; i < 5; i++)
 	{
-		IPPU.Joypads [i] = S9xReadJoypad (i);
+        IPPU.Joypads [i] = S9xReadJoypad (i);
 	}
 
 //	S9xMovieUpdate();
