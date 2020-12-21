@@ -213,7 +213,7 @@ s32 MenuMessageBox(const char *message1, const char *message2, const char *messa
 void PrintTitle(const char *title)
 {
 	sal_ImageDraw(mMenuBackground, SAL_SCREEN_WIDTH, SAL_SCREEN_HEIGHT, 0, 0);
-	sal_VideoPrint(8, 4, title, SAL_RGB(31, 8, 8));
+	sal_VideoPrint(8, 0, title, SAL_RGB(31, 8, 8));
 }
 
 void PrintBar(u32 givenY)
@@ -1013,7 +1013,7 @@ void ShowCheats()
 
 		// Draw screen:
 		menuSmooth=menuSmooth*7+(menufocus<<8); menuSmooth>>=3;
-		RenderMenu("Credits", menuCount,menuSmooth,menufocus);
+		RenderMenu("Cheats", menuCount,menuSmooth,menufocus);
 		sal_VideoFlip(1);
 		usleep(10000);
 	}
@@ -1043,7 +1043,7 @@ void MainMenuUpdateText(s32 menu_index)
 			strcpy(mMenuText[menu_index], "Settings");
 			break;
 		case MENU_CHEATS:
-			strcpy(mMenuText[MENU_CHEATS],"Cheats");
+			strcpy(mMenuText[menu_index],"Cheats");
 			break;
 	}
 }
