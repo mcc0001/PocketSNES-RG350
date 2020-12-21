@@ -82,15 +82,7 @@ ipk: all
 .PHONY : clean
 
 opk: all
-	@mksquashfs \
-	pocketsnes/default.retrofw.desktop \
-	pocketsnes/snes.retrofw.desktop \
-	pocketsnes/pocketsnes.dge \
-	pocketsnes/pocketsnes.man.txt \
-	pocketsnes/pocketsnes.png \
-	pocketsnes/backdrop.png \
-	pocketsnes/pocketsnes.opk \
-	-all-root -noappend -no-exports -no-xattrs
+	./opk/make_opk.sh
 
 clean :
 	rm -f $(OBJS) pocketsnes/pocketsnes.ipk
