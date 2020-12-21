@@ -267,6 +267,21 @@ const char *S9xGetFilename (const char *ex)
 	return (dir);
 }
 
+const char *S9xGetCheatFilename (const char *ex)
+{
+    static char dir [SAL_MAX_PATH];
+    char fname [SAL_MAX_PATH];
+    char ext [SAL_MAX_PATH];
+
+    sal_DirectorySplitFilename(Memory.ROMFilename, dir, fname, ext);
+    strcpy(dir, sal_DirectoryGetHome());
+    strcat(dir, "/cheats");
+    sal_DirectoryCombine(dir,fname);
+    strcat (dir, ex);
+
+    return (dir);
+}
+
 extern struct SAVE_STATE mSaveState[10];
 extern s32 saveno;
 
