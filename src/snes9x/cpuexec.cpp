@@ -569,6 +569,7 @@ void S9xDoHBlankProcessing_SFX ()
 		if (CPU.V_Counter >= FIRST_VISIBLE_LINE &&
 			CPU.V_Counter < PPU.ScreenHeight + FIRST_VISIBLE_LINE)
 		{
+		    //littlehui renderline
 			RenderLine (CPU.V_Counter - FIRST_VISIBLE_LINE);
 		}
 	// Use TimerErrorCounter to skip update of SPC700 timers once

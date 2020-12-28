@@ -341,15 +341,20 @@ uint32 S9xReadJoypad (int which1)
         //fprintf(stderr, "S9xReadJoypad  SAL_INPUT_MENU\n");
         return val;
 	} else if (joy & SAL_INPUT_QUICKLOAD) {
-        if (mSaveState[saveno].fullFilename[0] == '\0') {
+/*        if (mSaveState[saveno].fullFilename[0] == '\0') {
             ScanSaveStates(mRomName);
         }
-        LoadStateFile(mSaveState[saveno].fullFilename);
+        LoadStateFile(mSaveState[saveno].fullFilename);*/
+        mEnterMenu = 3;
         return val;
 	} else if (joy & SAL_INPUT_QUICKSAVE) {
 	    //quick save in menu
         mEnterMenu = 2;
         return val;
+	} else if (joy & SAL_INPUT_QUITE_GAME) {
+	    //quite game
+        mEnterMenu = 4;
+	    return val;
 	}
 
 #if 0
@@ -574,7 +579,10 @@ int Run(int sound)
 
 	sal_AudioPause();
 	sal_VideoExitGame();
-    if (mEnterMenu == 2) {
+	//quick save and load
+	//2 quick save,3 quick loac.4 quick exit
+    if (mEnterMenu > 1) {
+        //fprintf(stderr, "mEnter Menu %d\n", mEnterMenu);
         return mEnterMenu;
     }
 	mEnterMenu=0;
@@ -807,7 +815,7 @@ int mainEntry(int argc, char* argv[])
 		mInMenu=0;
         mEnterMenu = 0;
         interruptMenuEvent = 0;
-        fprintf(stderr, "MainEntry return TO mainEntry interruptMenuEvent %d\n", interruptMenuEvent);
+        //fprintf(stderr, "MainEntry return TO mainEntry interruptMenuEvent %d\n", interruptMenuEvent);
 
 		if(event==EVENT_LOAD_ROM)
 		{
@@ -840,7 +848,7 @@ int mainEntry(int argc, char* argv[])
 
 		if(event==EVENT_RUN_ROM)
 		{
-            fprintf(stderr, "RETURN EVENT_RUN_ROM\n");
+            //fprintf(stderr, "RETURN EVENT_RUN_ROM\n");
 
             sal_AudioSetVolume(mMenuOptions.volume,mMenuOptions.volume);
 			sal_CpuSpeedSet(mMenuOptions.cpuSpeed);

@@ -731,8 +731,8 @@ bool LoadStateFile(s8 *filename)
 	bool ret;
 	if (!(ret = S9xUnfreezeGame(filename)))
 		fprintf(stderr, "LoadStateFile Failed to read saved state at %s: %s\n", filename, strerror(errno));
-	else
-        fprintf(stderr, "LoadStateFile success to read saved state at %s\n", filename);
+	//else
+     //   fprintf(stderr, "LoadStateFile success to read saved state at %s\n", filename);
     return ret;
 }
 
@@ -742,8 +742,8 @@ bool SaveStateFile(s8 *filename)
 	bool ret;
 	if (!(ret = S9xFreezeGame(filename)))
 		fprintf(stderr, "SaveStateFile Failed to write saved state at %s: %s\n", filename, strerror(errno));
-	else
-        fprintf(stderr, "SaveStateFile success to write saved state at %s\n", filename);
+	//else
+     //   fprintf(stderr, "SaveStateFile success to write saved state at %s\n", filename);
     return ret;
 }
 
@@ -761,9 +761,14 @@ static s32 SaveStateSelect(s32 mode)
 	s32 action=11;
 	u32 keys=0;
     bool quickSaveFlag = false;
-	u16 *pixTo,*pixFrom;
-	if (mode == 3) {
+    bool quickLoadFlag = false;
+
+    u16 *pixTo,*pixFrom;
+	if (mode == SAVESTATE_MODE_QUICK_SAVE) {
 	    quickSaveFlag = true;
+	}
+	if (mode == SAVESTATE_MODE_QUICK_LOAD) {
+        quickLoadFlag = true;
 	}
 	if(mRomName[0]==0)
 	{
@@ -781,9 +786,11 @@ static s32 SaveStateSelect(s32 mode)
 	    //quick save
 	    if (quickSaveFlag) {
 	        action = 6;
-	    } else {
-            keys=sal_InputPollRepeat(0);
-        }
+	    } else if (quickLoadFlag) {
+            action = 8;
+	    }else {
+	            keys=sal_InputPollRepeat(0);
+	    }
 		if(keys&SAL_INPUT_UP || keys&SAL_INPUT_LEFT) {saveno--; action=1;}
 		if(keys&SAL_INPUT_DOWN || keys&SAL_INPUT_RIGHT) {saveno++; action=1;}
 		if(saveno<0) saveno=9;
@@ -938,6 +945,11 @@ static s32 SaveStateSelect(s32 mode)
 					action=100;  // loaded ok so exit
 				else
 					action=9; // did not load correctly; report an error
+                //run once
+                if (quickLoadFlag) {
+                    action = 100;
+                }
+                quickLoadFlag = false;
 				break;
 			// case 9:
 				// action=1;
@@ -1598,11 +1610,18 @@ s32 MenuRun(s8 *romName, int interruptMenuEvent)
 	s32 subaction=0;
 	u32 keys=0;
 	bool quickSaveFlag = false;
-    fprintf(stderr, "interruptMenuEvent %d\n", interruptMenuEvent);
-
+	bool quickLoadFlag = false;
+	bool quietGameFlag = false;
+    //fprintf(stderr, "interruptMenuEvent %d\n", interruptMenuEvent);
     if (interruptMenuEvent == 2) {
-        fprintf(stderr, "set quickFlag true\n");
         quickSaveFlag = true;
+    }
+    if (interruptMenuEvent == 3) {
+        quickLoadFlag = true;
+    }
+    if (interruptMenuEvent == 4) {
+        fprintf(stderr, "interruptMenuEvent %d\n", interruptMenuEvent);
+        quietGameFlag = true;
     }
 	sal_CpuSpeedSet(MENU_NORMAL_CPU_SPEED);
 
@@ -1635,7 +1654,10 @@ s32 MenuRun(s8 *romName, int interruptMenuEvent)
 		sal_VideoFlip(1);
 
         keys=sal_InputPollRepeat(0);
-        if (keys & INP_BUTTON_MENU_SELECT || quickSaveFlag)
+        if (keys & INP_BUTTON_MENU_SELECT
+        || quickSaveFlag
+        || quickLoadFlag
+        || quietGameFlag)
 		{
 		    //quick save
             while (keys)
@@ -1648,13 +1670,20 @@ s32 MenuRun(s8 *romName, int interruptMenuEvent)
 				keys=sal_InputPoll(0);
 
 				usleep(10000);
-				if (quickSaveFlag) {
+				if (quickSaveFlag || quickLoadFlag || quietGameFlag) {
                     keys = 0;
 				}
 			}
 			//quick save
             if (quickSaveFlag) {
                 menufocus = SAVESTATE_MENU_SAVE;
+            }
+            if (quickLoadFlag) {
+                menufocus = SAVESTATE_MENU_LOAD;
+            }
+            if (quietGameFlag) {
+                fprintf(stderr, "quietGameFlag start \n", interruptMenuEvent);
+                menufocus = MENU_EXIT_APP;
             }
 			switch(menufocus)
 			{
@@ -1669,7 +1698,12 @@ s32 MenuRun(s8 *romName, int interruptMenuEvent)
 					}
 					break;
 				case SAVESTATE_MENU_LOAD:
-					subaction=SaveStateSelect(SAVESTATE_MODE_LOAD);
+				    if (quickLoadFlag) {
+                        subaction=SaveStateSelect(SAVESTATE_MODE_QUICK_LOAD);
+                        quickLoadFlag = false;
+                    } else {
+                        subaction=SaveStateSelect(SAVESTATE_MODE_LOAD);
+                    }
 					if(subaction==100)
 					{
 						menuExit=1;
@@ -1709,12 +1743,15 @@ s32 MenuRun(s8 *romName, int interruptMenuEvent)
 					}
 					break;
 				case MENU_EXIT_APP:
-					action=EVENT_EXIT_APP;
+                    fprintf(stderr, "quietGameFlag action=EVENT_EXIT_APP; \n");
+                    action=EVENT_EXIT_APP;
 					menuExit=1;
 					break;
-
 			}
-		}
+            quietGameFlag = false;
+            quickLoadFlag = false;
+            quickSaveFlag = false;
+        }
 		else if (keys & INP_BUTTON_MENU_CANCEL)
 		{
 			if(mRomName[0]!=0)
@@ -1747,6 +1784,6 @@ s32 MenuRun(s8 *romName, int interruptMenuEvent)
 	}
 
   sal_InputWaitForRelease();
-	fprintf(stderr, "Return To Menurun mode and action %d \n", action);
+	//fprintf(stderr, "Return To Menurun mode and action %d \n", action);
   return action;
 }

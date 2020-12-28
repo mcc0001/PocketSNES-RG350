@@ -77,12 +77,12 @@ static u32 sal_Input(int held, u32 j)
 		if (keys[SDLK_DOWN])		inputHeld[j] |= SAL_INPUT_DOWN;
 		if (keys[SDLK_LEFT])		inputHeld[j] |= SAL_INPUT_LEFT;
 		if (keys[SDLK_RIGHT])		inputHeld[j] |= SAL_INPUT_RIGHT;
-		if (keys[SDLK_END] || keys[SDLK_HOME] || (keys[SDLK_ESCAPE] && keys[SDLK_RETURN])) inputHeld[j] |= SAL_INPUT_MENU;
+		//if (keys[SDLK_END] || keys[SDLK_HOME] || (keys[SDLK_ESCAPE] && keys[SDLK_RETURN])) inputHeld[j] |= SAL_INPUT_MENU;
 		if (keys[SDLK_ESCAPE] && keys[SDLK_TAB]) inputHeld[j] |= SAL_INPUT_QUICKLOAD;
 		if (keys[SDLK_ESCAPE] && keys[SDLK_BACKSPACE]) inputHeld[j] |= SAL_INPUT_QUICKSAVE;
         //if (keys[SDLK_KP_DIVIDE]) inputHeld[j] |= SAL_INPUT_QUICKSAVE;
         //if (keys[SDLK_KP_PERIOD]) inputHeld[j] |= SAL_INPUT_QUICKLOAD;
-
+        if (keys[SDLK_ESCAPE] && keys[SDLK_RETURN]) inputHeld[j] |= SAL_INPUT_QUITE_GAME;
 		SDL_Event event;
 		if (!SDL_PollEvent(&event)) {
 			if (held) return inputHeld[j];
@@ -94,15 +94,15 @@ static u32 sal_Input(int held, u32 j)
 			case SDL_KEYDOWN:
 				switch (event.key.keysym.sym) {
 				    case SDLK_HOME:
-                        fprintf(stderr, "sal_Input the input is SDL_KEYDOWN\n");
+                        //fprintf(stderr, "sal_Input the input is SDL_KEYDOWN\n");
                         extraKeys |= SAL_INPUT_MENU;
 					    break;
 				    case SDLK_KP_DIVIDE :
-                        fprintf(stderr, "sal_Input the SDL_KEYDOWN is SDLK_KP_DIVIDE\n");
+                        //fprintf(stderr, "sal_Input the SDL_KEYDOWN is SDLK_KP_DIVIDE\n");
                         extraKeys |= SAL_INPUT_QUICKSAVE;
                         break;
                     case SDLK_KP_PERIOD :
-                        fprintf(stderr, "sal_Input the SDL_KEYDOWN is SDLK_KP_PERIOD\n");
+                        //fprintf(stderr, "sal_Input the SDL_KEYDOWN is SDLK_KP_PERIOD\n");
                         extraKeys |= SAL_INPUT_QUICKLOAD;
                         break;
                 }
