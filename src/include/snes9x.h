@@ -344,8 +344,8 @@ struct SSettings{
     bool8  InterpolatedSound;
     bool8  ThreadSound;
     bool8  Mute;
-    bool8  NextAPUEnabled;
-    uint8  AltSampleDecode;
+    bool8  NextAPUEnabled; /* XXX: unused */
+    uint8  AltSampleDecode; /* XXX: unused */
     bool8  FixFrequency;
     
     /* Graphics options */
@@ -416,6 +416,10 @@ extern struct SSettings Settings;
 extern struct SCPUState CPU;
 extern struct SSNESGameFixes SNESGameFixes;
 extern char String [513];
+
+#ifdef LAGFIX
+extern bool finishedFrame;
+#endif
 
 void S9xExit ();
 void S9xMessage (int type, int number, const char *message);

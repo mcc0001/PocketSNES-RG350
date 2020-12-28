@@ -23,13 +23,14 @@ INCLUDE = -I src \
 		-I src/include \
 		-I menu -I src/linux -I src/snes9x
 
-CFLAGS = $(INCLUDE) -DGCW_ZERO -D__LINUX__ -D__DINGUX__ -DFOREVER_16_BIT -DFOREVER_16_BIT_SOUND $(SDL_CFLAGS)
+CFLAGS = $(INCLUDE) -DRC_OPTIMIZED -DGCW_ZERO -D__LINUX__ -D__DINGUX__ -DFOREVER_16_BIT -DFOREVER_16_BIT_SOUND -DLAGFIX -DNO_ROM_BROWSER
 # CFLAGS += -ggdb3 -Og
 CFLAGS += -O3 -fdata-sections -ffunction-sections -mips32r2 -mno-mips16 -fomit-frame-pointer -fno-builtin
 CFLAGS += -fno-common -Wno-write-strings -Wno-sign-compare -ffast-math -ftree-vectorize --std=gnu11
 CFLAGS += -funswitch-loops -fno-strict-aliasing
-CFLAGS += -DFAST_LSB_WORD_ACCESS
+CFLAGS += -DFAST_ALIGNED_LSB_WORD_ACCESS
 CFLAGS += -flto
+CFLAGS += $(SDL_CFLAGS)
 ifdef PROFILE_GEN
 CFLAGS += -fprofile-generate -fprofile-dir=/media/data/profile/pocketsnes
 else
@@ -55,7 +56,8 @@ OBJS    = $(OBJ_CPP) $(OBJ_C)
 all : $(TARGET)
 
 $(TARGET) : $(OBJS)
-	$(CMD)$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
+	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
+	$(STRIP) $(TARGET)
 
 ipk: all
 	@rm -rf /tmp/.pocketsnes-ipk/ && mkdir -p /tmp/.pocketsnes-ipk/root/home/retrofw/emus/pocketsnes /tmp/.pocketsnes-ipk/root/home/retrofw/apps/gmenu2x/sections/emulators /tmp/.pocketsnes-ipk/root/home/retrofw/apps/gmenu2x/sections/emulators.systems
@@ -73,23 +75,15 @@ ipk: all
 	@ar r dist/pocketsnes.ipk /tmp/.pocketsnes-ipk/control.tar.gz /tmp/.pocketsnes-ipk/data.tar.gz /tmp/.pocketsnes-ipk/debian-binary
 
 %.o: %.c
-	$(CMD)$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 %.o: %.cpp
-	$(CMD)$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 .PHONY : clean
 
 opk: all
-	@mksquashfs \
-	pocketsnes/default.retrofw.desktop \
-	pocketsnes/snes.retrofw.desktop \
-	pocketsnes/pocketsnes.dge \
-	pocketsnes/pocketsnes.man.txt \
-	pocketsnes/pocketsnes.png \
-	pocketsnes/backdrop.png \
-	pocketsnes/pocketsnes.opk \
-	-all-root -noappend -no-exports -no-xattrs
+	./opk/make_opk.sh
 
 clean :
-	$(CMD)rm -f $(OBJS) $(TARGET) pocketsnes/pocketsnes.ipk
+	rm -f $(OBJS) pocketsnes/pocketsnes.ipk

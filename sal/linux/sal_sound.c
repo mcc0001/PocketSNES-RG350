@@ -1,11 +1,12 @@
 #include <stdlib.h>
 #include <SDL.h>
 
-#include <sal.h>
+#include "sal.h"
 
 #define BUFFER_FRAMES 3
 // 48000 Hz maximum; 1/50 of a second; 3 frames to hold (2 plus a bit extra)
 #define BUFFER_SAMPLES (48000 / 50 * (BUFFER_FRAMES + 1))
+extern void S9xMixSamples (u8 *buffer, int sample_count);
 
 static SDL_AudioSpec audiospec;
 

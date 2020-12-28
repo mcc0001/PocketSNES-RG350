@@ -5,6 +5,13 @@
 .opk_data
 *.ipk
 *.elf
+<<<<<<< HEAD
 profile/*
 .idea
 *.iml
+=======
+*.bin
+profile/*
+*.patch
+*~
+>>>>>>> upstream/master
