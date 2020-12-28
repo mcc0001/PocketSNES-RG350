@@ -72,8 +72,4 @@ opk: all
 	-all-root -noappend -no-exports -no-xattrs
 
 clean :
-<<<<<<< HEAD
-	$(CMD)rm -f $(OBJS) $(TARGET)
-=======
 	$(CMD)rm -f $(OBJS)
->>>>>>> upstream/master

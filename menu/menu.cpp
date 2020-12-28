@@ -1564,13 +1564,33 @@ s32 SettingsMenu(void)
 				case SETTINGS_MENU_FULLSCREEN:
 					if (keys & SAL_INPUT_RIGHT)
 					{
+					    //0,1,2,3,4,5,6,7
+					    //0,3,5,6
 						mMenuOptions->fullScreen++;
+						if (mMenuOptions->fullScreen > 0  && mMenuOptions->fullScreen < 3) {
+                            mMenuOptions->fullScreen = 3;
+                        }
+						if (mMenuOptions->fullScreen > 3  && mMenuOptions->fullScreen < 5) {
+                            mMenuOptions->fullScreen = 5;
+                        }
+                        if (mMenuOptions->fullScreen == 7) {
+                            mMenuOptions->fullScreen++;
+                        }
 						if(mMenuOptions->fullScreen > 7) mMenuOptions->fullScreen = 0;
 					}
 					else
 					{
 						mMenuOptions->fullScreen--;
+                        if (mMenuOptions->fullScreen > 0  && mMenuOptions->fullScreen < 3) {
+                            mMenuOptions->fullScreen = 0;
+                        }
+                        if (mMenuOptions->fullScreen > 3  && mMenuOptions->fullScreen < 5) {
+                            mMenuOptions->fullScreen = 3;
+                        }
 						if(mMenuOptions->fullScreen > 7) mMenuOptions->fullScreen = 7;
+                        if (mMenuOptions->fullScreen == 7) {
+                            mMenuOptions->fullScreen--;
+                        }
 					}
 					SettingsMenuUpdateText(SETTINGS_MENU_FULLSCREEN);
 					break;

@@ -179,13 +179,11 @@ bool8_32 S9xDeinitUpdate (int Width, int Height, bool8_32)
 		LastPAL = PAL;
 	}
 	//littlehui debug
-    FILE *fp;
-    fp = fopen("/media/home/pocketsnes.txt", "w");
     //fprintf(fp, "%s", cheat_file_path);
-    fprintf(fp, "%d",  PAL);
-    fclose(fp);
 	switch (mMenuOptions.fullScreen)
 	{//TODO littlehui
+	    case 3:
+	        break;
 		case 0: /* No scaling */
 		// case 3: /* Hardware scaling */
 		{
@@ -202,7 +200,7 @@ bool8_32 S9xDeinitUpdate (int Width, int Height, bool8_32)
 			}
 			break;
 		}
-		case 1: /* Fast software scaling */
+		/*case 1:  Fast software scaling
 			if (PAL) {
 				upscale_256x240_to_320x240((uint32_t*) sal_VideoGetBuffer(), (uint32_t*) IntermediateScreen, SNES_WIDTH);
 			} else {
@@ -210,7 +208,7 @@ bool8_32 S9xDeinitUpdate (int Width, int Height, bool8_32)
 			}
 			break;
 
-		case 2: /* Smooth software scaling */
+		case 2:  Smooth software scaling
 			if (PAL) {
 				upscale_256x240_to_320x240_bilinearish((uint32_t*) sal_VideoGetBuffer() + 160, (uint32_t*) IntermediateScreen, SNES_WIDTH);
                 //upscale_256x240_to_640x480_bilinearish((uint32_t*) sal_VideoGetBuffer() + 320, (uint32_t*) IntermediateScreen, SNES_WIDTH);
@@ -230,7 +228,7 @@ bool8_32 S9xDeinitUpdate (int Width, int Height, bool8_32)
                 upscale_256x224_to_512x448((uint32_t*) sal_VideoGetBuffer() + 256, (uint32_t*) IntermediateScreen, SNES_WIDTH);
                 //upscale_256x224_to_512x480((uint32_t*) sal_VideoGetBuffer() + 256, (uint32_t*) IntermediateScreen, SNES_WIDTH);
             }
-	        break;
+	        break;*/
 	    case 5:
             //TODO littlehui
 	        // double scanline
@@ -251,7 +249,7 @@ bool8_32 S9xDeinitUpdate (int Width, int Height, bool8_32)
                 upscale_256x224_to_512x448_grid((uint32_t*) sal_VideoGetBuffer() + 256 * 16, (uint32_t*) IntermediateScreen, SNES_WIDTH);
             }
 	        break;
-        case 7:
+       /* case 7:
             //TODO littlehui
             // double fast
             if (PAL) {
@@ -259,7 +257,19 @@ bool8_32 S9xDeinitUpdate (int Width, int Height, bool8_32)
             } else {
                 upscale_256x224_to_256x448_scanline((uint32_t*) sal_VideoGetBuffer() + 256 * 8, (uint32_t*) IntermediateScreen, SNES_WIDTH);
             }
-            break;
+            break;*/
+	    case 8:
+	        break;
+	    case 9:
+	        break;
+	    case 10:
+	        break;
+	    case 11:
+	        break;
+	    case 12:
+	        break;
+	    case 13:
+	        break;
 	}
 
 	u32 newTimer;
@@ -267,7 +277,7 @@ bool8_32 S9xDeinitUpdate (int Width, int Height, bool8_32)
 	{
 		mFps++;
 		newTimer=sal_TimerRead();
-		if(newTimer-mLastTimer>Memory.ROMFramesPerSecond)
+		if(newTimer - mLastTimer > (u32)Memory.ROMFramesPerSecond)
 		{
 			mLastTimer=newTimer;
 			sprintf(mFpsDisplay,"%2d/%2d", mFps, Memory.ROMFramesPerSecond);
@@ -456,7 +466,7 @@ void S9xSyncSpeed(void)
 	}
 
 	while (sal_AudioGetFramesBuffered() >= sal_AudioGetMaxFrames())
-		usleep(1000);
+		usleep(100);
 }
 
 const char *S9xBasename (const char *f)
@@ -500,7 +510,7 @@ void S9xSaveSRAM (int showWarning)
 
 bool8_32 S9xOpenSoundDevice(int a, unsigned char b, int c)
 {
-
+	return TRUE;
 }
 
 void S9xAutoSaveSRAM (void)
@@ -632,7 +642,7 @@ int SnesInit()
 	Settings.SoundBufferSize = 0;
 	Settings.CyclesPercentage = 100;
 	Settings.DisableSoundEcho = FALSE;
-	Settings.APUEnabled = Settings.NextAPUEnabled = TRUE;
+	Settings.APUEnabled = TRUE;
 	Settings.H_Max = SNES_CYCLES_PER_SCANLINE;
 	Settings.SkipFrames = AUTO_FRAMERATE;
 	Settings.Shutdown = Settings.ShutdownMaster = TRUE;
