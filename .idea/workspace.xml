@@ -62,6 +62,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectId" id="1mHcScd7SwgzYatTz12qBR7WNr6" />
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -91,7 +92,9 @@
       <workItem from="1609153958986" duration="1298000" />
       <workItem from="1609156688163" duration="638000" />
       <workItem from="1609159765251" duration="600000" />
-      <workItem from="1609162922958" duration="4332000" />
+      <workItem from="1609162922958" duration="6730000" />
+      <workItem from="1609599876797" duration="3326000" />
+      <workItem from="1609849585658" duration="3716000" />
     </task>
     <servers />
   </component>
