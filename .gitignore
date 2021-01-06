@@ -8,4 +8,5 @@
 *.bin
 profile/*
 *.patch
+.idea
 *~
