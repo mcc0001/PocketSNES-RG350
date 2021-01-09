@@ -168,10 +168,15 @@ void S9xRemoveCheat (uint32 which1)
 	int block = (address >> MEMMAP_SHIFT) & MEMMAP_MASK;
 	uint8 *ptr = Memory.Map [block];
 	    
+	/***
+	不还原初始值
+	***/
+	/***
 	if (ptr >= (uint8 *) CMemory::MAP_LAST)
 	    *(ptr + (address & 0xffff)) = Cheat.c [which1].saved_byte;
 	else
 	    S9xSetByte (Cheat.c [which1].saved_byte, address);
+	***/
 	// Unsave the address for the next call to S9xRemoveCheat.
 	Cheat.c [which1].saved = FALSE;
     }
@@ -243,74 +248,20 @@ bool8 S9xLoadCheatFile (const char *filename)
     if (!fs)
 	return (FALSE);
 
-
-	char line[256];
-	char delim[] = " -#	";  //char filter
-	while (fgets (line, 256, fs)!=NULL){
-		// \r\n filter
-		char * find;
-		find = strchr(line, '\n'); 
-		if(find)
-		*find = '\0';
-		find = strchr(line, '\r'); 
-		if(find)
-		*find = '\0';
-	
-		//comment filter
-		if(line[0]=='#'){
-			continue;
-		}
-		
-		//cp name
-		char * name;
-		name = strchr(line, '#'); 
-		if(name)
-		memcpy(&data[8],&name[1],MAX_SFCCHEAT_NAME - 1);
-		
-		//define filter
-		char *s = strdup(line);
-		char *token;
-		char datas[MAX_SFCCHEAT_NAME + 10];
-		memset(datas,0,MAX_SFCCHEAT_NAME +10);
-		for(token = strsep(&s, delim); token != NULL; token = strsep(&s, delim)) {
-			strcat(datas,token);
-		}
-
-		//cp2mem
-		data[4] = Hex2Byte(&datas[0]);
-		data[3] = Hex2Byte(&datas[2]);
-		data[2] = Hex2Byte(&datas[4]);
-		data[1] = Hex2Byte(&datas[6]);
-		data[5] = Hex2Byte(&datas[8]);
-		
-		//set enable flag 
-		Cheat.c [Cheat.num_cheats].enabled = 0;
-		Cheat.c [Cheat.num_cheats].byte = data [1];
-		
-		Cheat.c [Cheat.num_cheats].address = data [2] | (data [3] << 8) |  (data [4] << 16);
-		Cheat.c [Cheat.num_cheats].saved_byte = data [5];
-		Cheat.c [Cheat.num_cheats].saved = 1;
-		memmove (Cheat.c [Cheat.num_cheats].name, &data [8], MAX_SFCCHEAT_NAME - 1);
-		Cheat.c [Cheat.num_cheats++].name [MAX_SFCCHEAT_NAME - 1] = 0;
-	}
-
-
-/*     while (fread ((void *) data, 1, 8 + MAX_SFCCHEAT_NAME, fs) == 8 + MAX_SFCCHEAT_NAME)
+    while (fread ((void *) data, 1, 8 + MAX_SFCCHEAT_NAME, fs) == 8 + MAX_SFCCHEAT_NAME)
     {
-	if (data[6] != 254 || data[7] != 252) {
-		fclose (fs);
-		return (FALSE);
-	}
-	Cheat.c [Cheat.num_cheats].enabled = (data [0] & 4) == 0;
-	Cheat.c [Cheat.num_cheats].byte = data [1];
-	Cheat.c [Cheat.num_cheats].address = data [2] | (data [3] << 8) |  (data [4] << 16);
-	Cheat.c [Cheat.num_cheats].saved_byte = data [5];
-	Cheat.c [Cheat.num_cheats].saved = (data [0] & 8) != 0;
-	memmove (Cheat.c [Cheat.num_cheats].name, &data [8], MAX_SFCCHEAT_NAME - 1);
-	Cheat.c [Cheat.num_cheats++].name [MAX_SFCCHEAT_NAME - 1] = 0;
-    } */
-	
-	
+        if (data[6] != 254 || data[7] != 252) {
+            fclose (fs);
+            return (FALSE);
+        }
+        Cheat.c [Cheat.num_cheats].enabled = (data [0] & 4) == 0;
+        Cheat.c [Cheat.num_cheats].byte = data [1];
+        Cheat.c [Cheat.num_cheats].address = data [2] | (data [3] << 8) |  (data [4] << 16);
+        Cheat.c [Cheat.num_cheats].saved_byte = data [5];
+        Cheat.c [Cheat.num_cheats].saved = (data [0] & 8) != 0;
+        memmove (Cheat.c [Cheat.num_cheats].name, &data [8], MAX_SFCCHEAT_NAME - 1);
+        Cheat.c [Cheat.num_cheats++].name [MAX_SFCCHEAT_NAME - 1] = 0;
+    }
     fclose (fs);
 
     return (TRUE);

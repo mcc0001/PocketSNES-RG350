@@ -69,21 +69,30 @@ static u32 sal_Input(int held, u32 j)
 		if (keys[SDLK_LSHIFT])		inputHeld[j] |= SAL_INPUT_Y;
 		if (keys[SDLK_TAB])			inputHeld[j] |= SAL_INPUT_L;
 		if (keys[SDLK_BACKSPACE])	inputHeld[j] |= SAL_INPUT_R;
-		if (keys[SDLK_PAGEUP])		inputHeld[j] |= SAL_INPUT_L;
-		if (keys[SDLK_PAGEDOWN])	inputHeld[j] |= SAL_INPUT_R;
+		if (keys[SDLK_PAGEUP])		inputHeld[j] |= SAL_INPUT_L2;
+		if (keys[SDLK_PAGEDOWN])	inputHeld[j] |= SAL_INPUT_R2;
 		if (keys[SDLK_RETURN])		inputHeld[j] |= SAL_INPUT_START;
 		if (keys[SDLK_ESCAPE])		inputHeld[j] |= SAL_INPUT_SELECT;
 		if (keys[SDLK_UP])			inputHeld[j] |= SAL_INPUT_UP;
 		if (keys[SDLK_DOWN])		inputHeld[j] |= SAL_INPUT_DOWN;
 		if (keys[SDLK_LEFT])		inputHeld[j] |= SAL_INPUT_LEFT;
 		if (keys[SDLK_RIGHT])		inputHeld[j] |= SAL_INPUT_RIGHT;
+        if (keys[SDLK_KP_DIVIDE])		inputHeld[j] |= SAL_INPUT_L3;
+        if (keys[SDLK_KP_PERIOD])		inputHeld[j] |= SAL_INPUT_R3;
 		//if (keys[SDLK_END] || keys[SDLK_HOME] || (keys[SDLK_ESCAPE] && keys[SDLK_RETURN])) inputHeld[j] |= SAL_INPUT_MENU;
-		if (keys[SDLK_ESCAPE] && keys[SDLK_TAB]) inputHeld[j] |= SAL_INPUT_QUICKLOAD;
-		if (keys[SDLK_ESCAPE] && keys[SDLK_BACKSPACE]) inputHeld[j] |= SAL_INPUT_QUICKSAVE;
-        //if (keys[SDLK_KP_DIVIDE]) inputHeld[j] |= SAL_INPUT_QUICKSAVE;
+
+		//if (keys[SDLK_ESCAPE] && keys[SDLK_TAB]) inputHeld[j] |= SAL_INPUT_QUICKLOAD;
+		//if (keys[SDLK_ESCAPE] && keys[SDLK_BACKSPACE]) inputHeld[j] |= SAL_INPUT_QUICKSAVE;
+
+		//if (keys[SDLK_KP_DIVIDE]) inputHeld[j] |= SAL_INPUT_QUICKSAVE;
         //if (keys[SDLK_KP_PERIOD]) inputHeld[j] |= SAL_INPUT_QUICKLOAD;
-        if (keys[SDLK_ESCAPE] && keys[SDLK_RETURN]) inputHeld[j] |= SAL_INPUT_QUITE_GAME;
-		SDL_Event event;
+        if (keys[SDLK_ESCAPE] && keys[SDLK_RETURN]) {
+            fprintf(stderr, "keys[SDLK_ESCAPE] && keys[SDLK_RETURN\n");
+            inputHeld[j] |= SAL_INPUT_QUITE_GAME;
+        }
+
+
+        SDL_Event event;
 		if (!SDL_PollEvent(&event)) {
 			if (held) return inputHeld[j];
 			return 0;
@@ -97,14 +106,6 @@ static u32 sal_Input(int held, u32 j)
                         //fprintf(stderr, "sal_Input the input is SDL_KEYDOWN\n");
                         extraKeys |= SAL_INPUT_MENU;
 					    break;
-				    case SDLK_KP_DIVIDE :
-                        //fprintf(stderr, "sal_Input the SDL_KEYDOWN is SDLK_KP_DIVIDE\n");
-                        extraKeys |= SAL_INPUT_QUICKSAVE;
-                        break;
-                    case SDLK_KP_PERIOD :
-                        //fprintf(stderr, "sal_Input the SDL_KEYDOWN is SDLK_KP_PERIOD\n");
-                        extraKeys |= SAL_INPUT_QUICKLOAD;
-                        break;
                 }
 				break;
 			}
@@ -217,7 +218,7 @@ u32 sal_VideoInit(u32 bpp)
     //StarseedPro-2.ttf
 	//mFont = TTF_OpenFont("unifont-13.0.02.ttf", 15);
     //mFont = TTF_OpenFont("StarseedPro-2.ttf", 15);
-    mFont = TTF_OpenFont("/usr/share/gmenu2x/skins/Default/fonts/SourceHanSans-Regular-04.ttf", 15);
+    mFont = TTF_OpenFont("/usr/share/gmenu2x/skins/Default/fonts/SourceHanSans-Regular-04.ttf", 14);
 
     if (mFont == NULL)
 	{
@@ -250,7 +251,7 @@ void sal_VideoEnterGame(u32 fullscreenOption, u32 pal, u32 refreshRate)
 	unsigned int Width = 256 /* SNES_WIDTH */,
 	             Height = pal ? 239 /* SNES_HEIGHT_EXTENDED */ : 224 /* SNES_HEIGHT */;
 	             //<3 not hardware
-	unsigned int WIDTHX2 = 512, HEIGHTX2 = pal ? 476 : 448;
+	unsigned int WIDTHX2 = 512, HEIGHTX2 = pal ? 478 : 448;
 	if (fullscreenOption < 3)
 	{
 		Width = SAL_SCREEN_WIDTH;
@@ -262,10 +263,10 @@ void sal_VideoEnterGame(u32 fullscreenOption, u32 pal, u32 refreshRate)
 	    //Height = pal ? 480 /* SNES_HEIGHT_EXTENDED */ : 448 /* SNES_HEIGHT */;
 	    if (fullscreenOption == 4) {
 	    //littlehui modify
-	     Height = pal ? 480 /* SNES_HEIGHT_EXTENDED */ : 448 /* SNES_HEIGHT */;
+	     Height = pal ? 478 /* SNES_HEIGHT_EXTENDED */ : 448 /* SNES_HEIGHT */;
 	    } else {
 	      	//pal set 448 scanline not suitable
-	        Height = 480;
+	        Height = 478;
 	    }
 	    if (fullscreenOption == 7) {
 	        Width = 256;

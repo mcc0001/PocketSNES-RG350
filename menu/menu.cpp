@@ -8,6 +8,9 @@
 #include "memmap.h"
 #include "soundux.h"
 #include "cheats.h"
+#include "cjs_font.h" //cjs
+#include "cjs.h" //cjs
+#include "cjs_sdl.h" //cjs
 
 #define MAX_DISPLAY_CHARS			40
 #define ROM_SELECTOR_SAVE_DEFAULT_DIR	0
@@ -1127,16 +1130,16 @@ void MainMenuUpdateText(s32 menu_index)
 			strcpy(mMenuText[SAVESTATE_MENU_SAVE],"保存存档");
 			break;
 		case MENU_RESET_GAME:
-			strcpy(mMenuText[MENU_RESET_GAME],"重置");
+			strcpy(mMenuText[MENU_RESET_GAME],"重置游戏");
 			break;
 		case MENU_EXIT_APP:
-			strcpy(mMenuText[MENU_EXIT_APP],"退出");
+			strcpy(mMenuText[MENU_EXIT_APP],"退出游戏");
 			break;
 		case MENU_SETTINGS:
-			strcpy(mMenuText[MENU_SETTINGS],"设置");
+			strcpy(mMenuText[MENU_SETTINGS],"高级设置");
 			break;
-		case MENU_CHEATS:
-			strcpy(mMenuText[MENU_CHEATS],"金手指");
+		case MENU_CHEAT:
+			strcpy(mMenuText[MENU_CHEAT],"用金手指");
 			break;
 	}
 }
@@ -1221,19 +1224,19 @@ void SettingsMenuUpdateText(s32 menu_index)
 			switch(mMenuOptions->fullScreen)
 			{
 				case 0:
-					strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频                        原始");
+                    strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频                        原始");
 					break;
 				case 1:
-					strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频                    快速全屏");
+                    strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频                    快速全屏");
 					break;
 				case 2:
-					strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频                    平滑全屏");
+                    strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频                    平滑全屏");
 					break;
 				case 3:
-					strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频                    硬件拉伸");
+                    strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频                    硬件拉伸");
 					break;
                 case 4:
-                    strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频               双倍硬件拉伸");
+                    strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频                双倍硬件拉伸");
                     break;
                 case 5:
                     strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"视频                 双倍-扫描线");
@@ -1302,7 +1305,9 @@ void MainMenuUpdateTextAll(void)
 	MainMenuUpdateText(MENU_RESET_GAME);
 	MainMenuUpdateText(MENU_ROM_SELECT);
 	MainMenuUpdateText(MENU_SETTINGS);
-	MainMenuUpdateText(MENU_CHEATS);
+	//old now is use MENU_CHEAT instead
+    //MainMenuUpdateText(MENU_CHEATS);
+    MainMenuUpdateText(MENU_CHEAT);
 	MainMenuUpdateText(MENU_EXIT_APP);
 }
 
@@ -1355,6 +1360,7 @@ void MenuInit(const char *systemDir, struct MENU_OPTIONS *menuOptions)
 	sal_ImageLoad("backdrop.png", &mMenuBackground, SAL_SCREEN_WIDTH, SAL_SCREEN_HEIGHT);
 
 	MenuReloadOptions();
+	InitFont();
 }
 
 
@@ -1621,7 +1627,11 @@ s32 SettingsMenu(void)
   sal_InputIgnore();
   return action;
 }
+s32 CHEAT_Menu(void)
+{
 
+	ec_Settings();
+}
 s32 MenuRun(s8 *romName, int interruptMenuEvent)
 {
     //if
@@ -1751,10 +1761,16 @@ s32 MenuRun(s8 *romName, int interruptMenuEvent)
 					SettingsMenu();
 					MainMenuUpdateTextAll();
 					break;
-				case MENU_CHEATS:
-					ShowCheats();
+				case MENU_CHEAT:
+					CHEAT_Menu();
 					MainMenuUpdateTextAll();
 					break;
+/*
+                    olccheat
+                    case MENU_CHEATS:
+					ShowCheats();
+					MainMenuUpdateTextAll();
+					break;*/
 				case MENU_RESET_GAME:
 					if(mRomName[0]!=0)
 					{
