@@ -438,7 +438,7 @@ uint32 S9xReadJoypad (int which1)
         fprintf(stderr, "joy & SAL_INPUT_QUITE_GAME\n");
         mEnterMenu = 4;
         return val;
-    } else if (((joy & SAL_INPUT_L) && (joy & SAL_INPUT_X)) || (joy & SAL_INPUT_L2))
+    } else if (joy & SAL_INPUT_L2)
 	{
         //Settings.TurboMode = 0;
         //time
@@ -939,6 +939,10 @@ int mainEntry(int argc, char* argv[])
     while(1)
     {
         mInMenu=1;
+        if (interruptMenuEvent == 4) {
+            event = EVENT_EXIT_APP;
+            break;
+        }
         event=MenuRun(mRomName, interruptMenuEvent);
         mInMenu=0;
         mEnterMenu = 0;
@@ -994,7 +998,7 @@ int mainEntry(int argc, char* argv[])
         if(event==EVENT_EXIT_APP) break;
     }
 
-    MenuMessageBox("Saving SRAM...","","",MENU_MESSAGE_BOX_MODE_MSG);
+    //MenuMessageBox("Saving SRAM...","","",MENU_MESSAGE_BOX_MODE_MSG);
     PSNESForceSaveSRAM();
 
 
