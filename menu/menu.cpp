@@ -53,7 +53,8 @@ void DefaultMenuOptions(void)
 	mMenuOptions->cpuSpeed=336;
 	mMenuOptions->country=0;
 	mMenuOptions->showFps=0;
-	mMenuOptions->soundRate=48000;
+    mMenuOptions->forceFullScreen=0;
+    mMenuOptions->soundRate=48000;
 	mMenuOptions->stereo=1;
 	mMenuOptions->fullScreen=3;
 	mMenuOptions->autoSaveSram=1;
@@ -1208,6 +1209,17 @@ void SettingsMenuUpdateText(s32 menu_index)
 			}
 			break;
 
+        case SETTINGS_MENU_FORCEFULLSCREEN:
+            switch(mMenuOptions->forceFullScreen)
+            {
+                case 0:
+                    strcpy(mMenuText[SETTINGS_MENU_FORCEFULLSCREEN],"强制全屏                     关");
+                    break;
+                case 1:
+                    strcpy(mMenuText[SETTINGS_MENU_FORCEFULLSCREEN],"强制全屏                     开");
+                    break;
+            }
+            break;
 		case SETTINGS_MENU_FPS:
 			switch(mMenuOptions->showFps)
 			{
@@ -1282,10 +1294,12 @@ void SettingsMenuUpdateTextAll(void)
 	SettingsMenuUpdateText(SETTINGS_MENU_SOUND_ON);
 	SettingsMenuUpdateText(SETTINGS_MENU_SOUND_STEREO);
 	SettingsMenuUpdateText(SETTINGS_MENU_SOUND_RATE);
+    SettingsMenuUpdateText(SETTINGS_MENU_FORCEFULLSCREEN);
 //	SettingsMenuUpdateText(SETTINGS_MENU_SOUND_VOL);
 	SettingsMenuUpdateText(SETTINGS_MENU_FRAMESKIP);
 	SettingsMenuUpdateText(SETTINGS_MENU_FPS);
-	SettingsMenuUpdateText(SETTINGS_MENU_SOUND_SYNC);
+
+    SettingsMenuUpdateText(SETTINGS_MENU_SOUND_SYNC);
 	SettingsMenuUpdateText(SETTINGS_MENU_FULLSCREEN);
 	SettingsMenuUpdateText(SETTINGS_MENU_LOAD_GLOBAL_SETTINGS);
 	SettingsMenuUpdateText(SETTINGS_MENU_SAVE_GLOBAL_SETTINGS);
@@ -1566,7 +1580,10 @@ s32 SettingsMenu(void)
 					mMenuOptions->showFps^=1;
 					SettingsMenuUpdateText(SETTINGS_MENU_FPS);
 					break;
-
+                case SETTINGS_MENU_FORCEFULLSCREEN:
+                    mMenuOptions->forceFullScreen^=1;
+                    SettingsMenuUpdateText(SETTINGS_MENU_FORCEFULLSCREEN);
+                    break;
 				case SETTINGS_MENU_FULLSCREEN:
 					if (keys & SAL_INPUT_RIGHT)
 					{

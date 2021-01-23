@@ -26,12 +26,14 @@
 static struct MENU_OPTIONS mMenuOptions;
 static int mEmuScreenHeight;
 static int mEmuScreenWidth;
+static int offsetLine = 16;
+
 static char mRomName[SAL_MAX_PATH]={""};
 static u32 mLastRate=0;
 static uint32 screenWidth = 0, screenHeight = 0;
 static bool clearCache = false;
 
-
+static bool PAL=false;
 static s8 mFpsDisplay[16]={""};
 static s8 mVolumeDisplay[16]={""};
 static s8 mQuickStateDisplay[16]={""};
@@ -210,10 +212,10 @@ bool8_32 S9xDeinitUpdate (int Width, int Height, bool8_32)
 
     // If the height changed from 224 to 239, or from 239 to 224,
     // possibly change the resolution.
-    bool PAL = !!(Memory.FillRAM[0x2133] & 4);
+    PAL = !!(Memory.FillRAM[0x2133] & 4);
     if (PAL != LastPAL)
     {
-        sal_VideoSetPAL(mMenuOptions.fullScreen, PAL);
+        sal_VideoSetPAL(mMenuOptions.fullScreen, mMenuOptions.forceFullScreen, PAL);
         LastPAL = PAL;
     }
     //littlehui debug
@@ -250,6 +252,9 @@ bool8_32 S9xDeinitUpdate (int Width, int Height, bool8_32)
         GFX.Screen = (uint8*)mScreen->pixels + 512;
         GFX.Pitch = mScreen->pitch;
     }*/
+    if (mMenuOptions.forceFullScreen) {
+        offsetLine = 1;
+    }
     switch (mMenuOptions.fullScreen)
     {//TODO littlehui
         case 3:
@@ -307,7 +312,13 @@ bool8_32 S9xDeinitUpdate (int Width, int Height, bool8_32)
                 upscale_256x240_to_512x480_scanline((uint32_t*) sal_VideoGetBuffer() + 256, (uint32_t*) IntermediateScreen, SNES_WIDTH);
                 //upscale_256x240_to_640x480_bilinearish((uint32_t*) sal_VideoGetBuffer() + 160, (uint32_t*) IntermediateScreen, SNES_WIDTH);
             } else {
-                upscale_256x224_to_512x448_scanline((uint32_t*) sal_VideoGetBuffer() + 256 * 16, (uint32_t*) IntermediateScreen, SNES_WIDTH);
+                if (mMenuOptions.forceFullScreen) {
+                    upscale_256x224_to_512x448_scanline((uint32_t *) sal_VideoGetBuffer() + 256,
+                                                        (uint32_t *) IntermediateScreen, SNES_WIDTH);
+                } else {
+                    upscale_256x224_to_512x448_scanline((uint32_t *) sal_VideoGetBuffer() + 256 * 16,
+                                                        (uint32_t *) IntermediateScreen, SNES_WIDTH);
+                }
             }
             break;
         case 6:
@@ -317,7 +328,16 @@ bool8_32 S9xDeinitUpdate (int Width, int Height, bool8_32)
                 upscale_256x240_to_512x480_grid((uint32_t*) sal_VideoGetBuffer() + 256, (uint32_t*) IntermediateScreen, SNES_WIDTH);
                 //upscale_256x240_to_640x480_bilinearish((uint32_t*) sal_VideoGetBuffer() + 160, (uint32_t*) IntermediateScreen, SNES_WIDTH);
             } else {
-                upscale_256x224_to_512x448_grid((uint32_t*) sal_VideoGetBuffer() + 256 * 16, (uint32_t*) IntermediateScreen, SNES_WIDTH);
+                if (mMenuOptions.forceFullScreen) {
+                    upscale_256x224_to_512x448_grid((uint32_t *) sal_VideoGetBuffer() + 256,
+                                                    (uint32_t *) IntermediateScreen, SNES_WIDTH);
+                } else {
+                    upscale_256x224_to_512x448_grid((uint32_t *) sal_VideoGetBuffer() + 256  * 16,
+                                                    (uint32_t *) IntermediateScreen, SNES_WIDTH);
+                }
+                //upscale_256x224_to_512x448_grid1((uint32_t*) sal_VideoGetBuffer() + 256, (uint32_t*) IntermediateScreen, SNES_WIDTH);
+                //upscale_256x224_to_512x448_scanline_v((uint32_t*) sal_VideoGetBuffer() + 256, (uint32_t*) IntermediateScreen, SNES_WIDTH);
+                //upscale_256x224_to_512x448((uint32_t*) sal_VideoGetBuffer() + 256, (uint32_t*) IntermediateScreen, SNES_WIDTH);
             }
             break;
             /* case 7:
@@ -352,16 +372,22 @@ bool8_32 S9xDeinitUpdate (int Width, int Height, bool8_32)
             }
             mFps=0;
         }
-        sal_VideoDrawRect(0,0,fps_rec_length,16,SAL_RGB(0,0,0));
-        sal_VideoPrint(0,0,mFpsDisplay,SAL_RGB(31,31,31));
-    } else {
-        //clear
-        if (mMenuOptions.fullScreen != 3) {
-            if (!PAL) {
-                sal_VideoDrawRect(0,0,110,16,SAL_RGB(0,0,0));
-                sal_VideoPrint(0,0,"",SAL_RGB(0,0,0));
+        if (mMenuOptions.fullScreen == 0) {
+            sal_VideoDrawRect(32,8,fps_rec_length,16,SAL_RGB(0,0,0));
+            sal_VideoPrint(32,8,mFpsDisplay,SAL_RGB(31,31,31));
+        } else if (mMenuOptions.fullScreen != 3) {
+            if (mMenuOptions.forceFullScreen || PAL) {
+                sal_VideoDrawRect(0,0,fps_rec_length,16,SAL_RGB(0,0,0));
+                sal_VideoPrint(0,0,mFpsDisplay,SAL_RGB(31,31,31));
+            } else {
+                sal_VideoDrawRect(0,16,fps_rec_length,16,SAL_RGB(0,0,0));
+                sal_VideoPrint(0,16,mFpsDisplay,SAL_RGB(31,31,31));
             }
+        } else {
+            sal_VideoDrawRect(0,0,fps_rec_length,16,SAL_RGB(0,0,0));
+            sal_VideoPrint(0,0,mFpsDisplay,SAL_RGB(31,31,31));
         }
+
     }
 
     if(mVolumeDisplayTimer>0)
@@ -458,6 +484,9 @@ uint32 S9xReadJoypad (int which1)
             }
             //mMenuOptions.showFps = Settings.TurboMode;
         }
+        //clear
+      /*  sal_VideoDrawRect(0,0,210,16,SAL_RGB(0,0,0));
+        sal_VideoPrint(0,0,"",SAL_RGB(31,31,31));*/
         return val;
 	} else if (joy & SAL_INPUT_R2)
 	{
@@ -653,7 +682,7 @@ int Run(int sound)
     int i;
     bool PAL = !!(Memory.FillRAM[0x2133] & 4);
 
-    sal_VideoEnterGame(mMenuOptions.fullScreen, PAL, Memory.ROMFramesPerSecond);
+    sal_VideoEnterGame(mMenuOptions.fullScreen,mMenuOptions.forceFullScreen, PAL, Memory.ROMFramesPerSecond);
     LastPAL = PAL;
 
     Settings.SoundSync = mMenuOptions.soundSync;
