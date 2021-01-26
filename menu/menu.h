@@ -52,7 +52,8 @@ enum  MENU_ENUM
 enum SETTINGS_MENU_ENUM
 {
 	SETTINGS_MENU_FULLSCREEN = 0,
-	SETTINGS_MENU_FRAMESKIP,
+    SETTINGS_MENU_FORCEFULLSCREEN,
+    SETTINGS_MENU_FRAMESKIP,
 	SETTINGS_MENU_FPS,
 	SETTINGS_MENU_SOUND_ON,
 //	SETTINGS_MENU_SOUND_VOL,
@@ -125,7 +126,8 @@ struct MENU_OPTIONS
 {
   unsigned int optionsVersion;
   unsigned int frameSkip;
-  unsigned int soundEnabled;
+  unsigned int forceFullScreen;
+    unsigned int soundEnabled;
   /* The following setting was 'transparency', which is now always enabled.
    * This setting word cannot be reused for any other purpose. It is not
    * guaranteed to be initialised to 0 in most installs of PocketSNES. */

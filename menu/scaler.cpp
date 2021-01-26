@@ -1882,6 +1882,45 @@ void upscale_256x224_to_512x448_scanline(uint32_t *dst, uint32_t *src, int width
     }
 }
 
+
+void upscale_256x224_to_512x448_scanline_v(uint32_t *dst, uint32_t *src, int width) {
+    uint16_t* Src16 = (uint16_t*) src;
+    uint16_t* Dst16 = (uint16_t*) dst;
+    // There are 64 blocks of 4 pixels horizontally, and 239 of 1 vertically.
+    // Each block of 4x1 becomes 5x1.
+    uint32_t BlockX, BlockY;
+    uint16_t* BlockSrc;
+    uint16_t* BlockDst;
+    uint16_t gcolor = hexcolor_to_rgb565(0x000000);
+    for (BlockY = 0; BlockY < 223; BlockY++)
+    {
+        //littlehui * 2
+        BlockSrc = Src16 + BlockY * 256 * 1;
+        BlockDst = Dst16 + BlockY * 512 * 1 * 2;
+        for (BlockX = 0; BlockX < 256; BlockX++)
+        {
+            /* Horizontally:
+             * Before(1):
+             * (a)
+             * After(4):
+             * (a)(a)
+             * (a)(a)
+             */
+            //one
+            uint16_t  a = *(BlockSrc);
+            uint16_t  scanline_color = Weight3_1( a, gcolor);
+            // -- Row 1 --
+            *(BlockDst) = a;
+            *(BlockDst + 1) = scanline_color;
+            // -- next row 2 --
+            *(BlockDst +  512 )  = a;
+            *(BlockDst +  512 + 1)  = scanline_color;
+            BlockSrc += 1;
+            BlockDst += 2;
+        }
+    }
+}
+
 void upscale_256x224_to_512x448_grid(uint32_t *dst, uint32_t *src, int width) {
     uint16_t* Src16 = (uint16_t*) src;
     uint16_t* Dst16 = (uint16_t*) dst;
@@ -1907,7 +1946,7 @@ void upscale_256x224_to_512x448_grid(uint32_t *dst, uint32_t *src, int width) {
              */
             //one
             uint16_t  color = *(BlockSrc);
-            uint16_t  scanline_color = Weight2_1( color, gcolor);
+            uint16_t  scanline_color = Weight3_1(color, gcolor);
 
             //uint16_t scanline_color = (color + (color & 0x7474)) >> 1;
             //scanline_color = (color + scanline_color + ((color ^ scanline_color) & 0x0421)) >> 1;
@@ -1920,6 +1959,70 @@ void upscale_256x224_to_512x448_grid(uint32_t *dst, uint32_t *src, int width) {
             // -- next row 2 --
             *(BlockDst +  512 )  = scanline_color;
             *(BlockDst +  512 + 1)  = scanline_color;
+            BlockSrc += 1;
+            BlockDst += 2;
+        }
+    }
+}
+
+void upscale_256x224_to_512x448_grid1(uint32_t *dst, uint32_t *src, int width) {
+    uint16_t* Src16 = (uint16_t*) src;
+    uint16_t* Dst16 = (uint16_t*) dst;
+    // There are 64 blocks of 4 pixels horizontally, and 239 of 1 vertically.
+    // Each block of 4x1 becomes 5x1.
+    uint32_t BlockX, BlockY;
+    uint16_t* BlockSrc;
+    uint16_t* BlockDst;
+    uint16_t gcolor = hexcolor_to_rgb565(0x000000);
+    for (BlockY = 0; BlockY < 223; BlockY++)
+    {
+        //littlehui * 2
+        BlockSrc = Src16 + BlockY * 256 * 1;
+        BlockDst = Dst16 + BlockY * 512 * 1 * 2;
+        for (BlockX = 0; BlockX < 256; BlockX++)
+        {
+            /* Horizontally:
+             * Before(1):
+             * (a)
+             * After(4):
+             * (a)(a)
+             * (a)(a)
+             */
+            //one
+            uint16_t  color0 = *(BlockSrc);
+            uint16_t  scanline_color = Weight3_1(color0, gcolor);
+            //scanline_color = Weight2_1(color0, scanline_color);
+
+            //uint16_t  scanline_color = gcolor;
+            //uint16_t scanline_color = (color0 + (color0 & 0x7474)) >> 1;
+            //scanline_color = (color0 + scanline_color + ((color0 ^ scanline_color) & 0x0421)) >> 1;
+
+            //uint32_t next_offset = (x + 1) >= GBC_SCREEN_WIDTH ? 0 : (x + 1);
+            //uint32_t scanline_color = (uint32_t)bgr555_to_native_16(*(src + next_offset));
+
+            // -- Row 1 --
+            *(BlockDst) = color0;
+
+            // -- next row 2 --
+            //*(BlockDst +  512 )  = color0;
+
+            if (BlockX%2 == 0) {
+                *(BlockDst + 1) = color0;
+                *(BlockDst +  512 + 1)  = color0;
+            } else {
+                *(BlockDst + 1) = scanline_color;
+                *(BlockDst +  512 + 1)  = scanline_color;
+            }
+            if (BlockY%2==0) {
+                *(BlockDst +  512 )  = color0;
+                *(BlockDst +  512 + 1)  = color0;
+            } else {
+                *(BlockDst +  512 )  = scanline_color;
+                *(BlockDst +  512 + 1)  = scanline_color;
+            }
+
+            // -- next row 3 --
+
             BlockSrc += 1;
             BlockDst += 2;
         }

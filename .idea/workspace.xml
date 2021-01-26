@@ -66,7 +66,7 @@
   <component name="ProjectId" id="1mHcScd7SwgzYatTz12qBR7WNr6" />
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../pocketsnes.20201006" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../snes9x4d" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -102,7 +102,8 @@
       <workItem from="1609599876797" duration="3326000" />
       <workItem from="1609849585658" duration="10402000" />
       <workItem from="1610021781308" duration="32070000" />
-      <workItem from="1610282500884" duration="1043000" />
+      <workItem from="1610282500884" duration="18572000" />
+      <workItem from="1611372113890" duration="4922000" />
     </task>
     <servers />
   </component>

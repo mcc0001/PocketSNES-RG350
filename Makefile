@@ -53,6 +53,7 @@ SRC_C   = $(foreach dir, $(SOURCE), $(wildcard $(dir)/*.c))
 OBJ_CPP = $(patsubst %.cpp, %.o, $(SRC_CPP))
 OBJ_C   = $(patsubst %.c, %.o, $(SRC_C))
 OBJS    = $(OBJ_CPP) $(OBJ_C)
+#@echo $(info $(OBJS))
 
 .PHONY : all
 all : $(TARGET)

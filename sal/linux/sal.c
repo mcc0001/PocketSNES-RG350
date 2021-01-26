@@ -244,7 +244,7 @@ u32 sal_VideoGetPitch()
 	return mScreen->pitch;
 }
 
-void sal_VideoEnterGame(u32 fullscreenOption, u32 pal, u32 refreshRate)
+void sal_VideoEnterGame(u32 fullscreenOption, u32 forceFullScreen, u32 pal, u32 refreshRate)
 {
 #ifdef GCW_ZERO
 	/* Copied from C++ headers which we can't include in C */
@@ -260,16 +260,20 @@ void sal_VideoEnterGame(u32 fullscreenOption, u32 pal, u32 refreshRate)
 	//hardware scala  X2
 	if (fullscreenOption > 3) {
 	    Width = 512;
-	    //Height = pal ? 480 /* SNES_HEIGHT_EXTENDED */ : 448 /* SNES_HEIGHT */;
-	    if (fullscreenOption == 4) {
-	    //littlehui modify
-	     Height = pal ? 478 /* SNES_HEIGHT_EXTENDED */ : 448 /* SNES_HEIGHT */;
+	    if (forceFullScreen) {
+	        Height = pal ? 478 /* SNES_HEIGHT_EXTENDED */ : 448 /* SNES_HEIGHT */;
 	    } else {
-	      	//pal set 448 scanline not suitable
-	        Height = 478;
-	    }
-	    if (fullscreenOption == 7) {
-	        Width = 256;
+	        //Height = pal ? 480 /* SNES_HEIGHT_EXTENDED */ : 448 /* SNES_HEIGHT */;
+	        if (fullscreenOption == 4) {
+	        //littlehui modify
+	            Height = pal ? 478 /* SNES_HEIGHT_EXTENDED */ : 448 /* SNES_HEIGHT */;
+	        } else {
+	      	    //pal set 448 scanline not suitable
+	            Height = 478;
+	        }
+	        if (fullscreenOption == 7) {
+	            Width = 256;
+	        }
 	    }
 	}
 /*	if (fullscreenOption == 4) {
@@ -290,12 +294,12 @@ void sal_VideoEnterGame(u32 fullscreenOption, u32 pal, u32 refreshRate)
 #endif
 }
 
-void sal_VideoSetPAL(u32 fullscreenOption, u32 pal)
+void sal_VideoSetPAL(u32 fullscreenOption, u32 forceFullScreen, u32 pal)
 {
     //littlehui modify
 	if (fullscreenOption >= 3) /* hardware scaling */
 	{
-		sal_VideoEnterGame(fullscreenOption, pal, mRefreshRate);
+		sal_VideoEnterGame(fullscreenOption, forceFullScreen, pal, mRefreshRate);
 	}
 }
 
